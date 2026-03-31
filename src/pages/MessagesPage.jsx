@@ -155,8 +155,8 @@ export default function MessagesPage() {
                         <div style={{
                           padding: '9px 14px',
                           borderRadius: isMe ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-                          background: isMe ? 'linear-gradient(135deg, var(--accent), #2563eb)' : 'var(--bg-elevated)',
-                          color: isMe ? 'white' : 'var(--text-primary)',
+                          background: isMe ? 'linear-gradient(135deg, var(--accent), #2563eb)' : 'var(--bg-glass)',
+                          color: isMe ? 'white' : 'var(--text-muted)',
                           fontSize: 14, lineHeight: 1.5,
                         }}>
                           {msg.content}

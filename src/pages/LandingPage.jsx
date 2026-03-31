@@ -325,6 +325,13 @@ export default function LandingPage() {
     >
       Start Collaborating →
     </Link>
+    <Link
+      to="/dashboard"
+      className="btn btn-dark btn-lg"
+      style={{ gap: 8, fontSize: 20, width: '300px', height: '70px'}}
+    >
+      Go to your dashboard →
+    </Link>
   </div>
 
   {/* Talent pills */}

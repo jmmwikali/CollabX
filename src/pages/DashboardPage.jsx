@@ -69,7 +69,7 @@ export default function DashboardPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
             <span style={{fontSize: '20px'}}><TalentBadge talent={user?.primary_talent}/></span>
             <RepBadge points={user?.reputation_points} />
-            <span style={{ fontSize: 12, color: 'var(--text-dark)', textTransform: 'capitalize' }}>
+            <span style={{ fontSize: 12, color: 'var(--text-primary)', textTransform: 'capitalize' }}>
               {user?.skill_level} level
             </span>
           </div>
@@ -82,7 +82,7 @@ export default function DashboardPage() {
           ].map(s => (
             <div key={s.label}>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 900, }}>{s.value}</div>
-              <div style={{ fontSize: 11, color: 'var(--text-dark)', marginTop: 2, fontWeight: 700 }}>{s.label}</div>
+              <div style={{ fontSize: 11, color: 'var(--text-primary)', marginTop: 2, fontWeight: 700 }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -117,7 +117,34 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {/* Notifications */}
+          <div>
+            <div className="section-header">
+              <h3 className="section-title">🔔 Notifications</h3>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {(data?.notifications || []).slice(0, 5).map(n => (
+                <div key={n.id} className="card card-sm" style={{
+                  opacity: n.is_read ? 0.6 : 1,
+                  borderLeft: n.is_read ? 'none' : '2px solid var(--accent)',
+                  padding: '12px 14px',
+                }}>
+                  <div style={{ fontWeight: 600, fontSize: 13 }}>{n.title}</div>
+                  {n.body && <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>{n.body.length > 70 ? `${n.body.slice(0, 70)}...` : n.body}</div>}
+                  <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 4 }}>{formatTime(n.created_at)}</div>
+                </div>
+              ))}
+              {(!data?.notifications || data.notifications.length === 0) && (
+                <div style={{ color: 'var(--text-seconday)', fontSize: 13, textAlign: 'center', padding: '20px 0' }}>
+                  All caught up! 
+                </div>
+              )}
+            </div>
+          </div> <br />
+
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 24, alignItems: 'start' }}>
+
+        
         {/* Left column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           {/* My Teams */}
@@ -161,30 +188,6 @@ export default function DashboardPage() {
                 <Link to="/teams" className="btn btn-primary btn-sm">Create a Team</Link>
               </div>
             )}
-          </div>
-          {/* Notifications */}
-          <div>
-            <div className="section-header">
-              <h3 className="section-title">🔔 Notifications</h3>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {(data?.notifications || []).slice(0, 5).map(n => (
-                <div key={n.id} className="card card-sm" style={{
-                  opacity: n.is_read ? 0.6 : 1,
-                  borderLeft: n.is_read ? 'none' : '2px solid var(--accent)',
-                  padding: '12px 14px',
-                }}>
-                  <div style={{ fontWeight: 600, fontSize: 13 }}>{n.title}</div>
-                  {n.body && <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>{n.body.length > 70 ? `${n.body.slice(0, 70)}...` : n.body}</div>}
-                  <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 4 }}>{formatTime(n.created_at)}</div>
-                </div>
-              ))}
-              {(!data?.notifications || data.notifications.length === 0) && (
-                <div style={{ color: 'var(--text-seconday)', fontSize: 13, textAlign: 'center', padding: '20px 0' }}>
-                  All caught up! 
-                </div>
-              )}
-            </div>
           </div>
         </div>
 

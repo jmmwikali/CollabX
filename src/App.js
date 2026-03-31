@@ -30,9 +30,9 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route path="/login" element={<PublicRoute><AuthLayout /></PublicRoute>} />
+      <Route path="/login" element={<AuthLayout />} />
       <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
-      <Route path="/register" element={<PublicRoute><AuthLayout /></PublicRoute>} />
+      <Route path="/register" element={<AuthLayout />} />
       <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
       <Route path="/explore" element={<ProtectedRoute><ExplorePage /></ProtectedRoute>} />
       <Route path="/teams" element={<ProtectedRoute><TeamsPage /></ProtectedRoute>} />
