@@ -419,6 +419,15 @@ body {
   color: var(--text-secondary);
 }
 
+.btn-ghost2 {
+  background: transparent;
+  color: var(--text-muted);
+}
+.btn-ghost2:hover:not(:disabled) {
+  background: var(--bg-glass);
+  color: var(--text-secondary);
+}
+
 .btn-danger {
   background: var(--danger);
   color: #f5e8e8;
@@ -431,7 +440,7 @@ body {
 
 .btn-success {
   background: var(--success);
-  color: #e8f5ee;
+  color: var(--text-secondary);
   box-shadow: 0 2px 8px rgba(106, 158, 127, 0.2);
 }
 .btn-success:hover:not(:disabled) {

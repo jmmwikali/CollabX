@@ -71,7 +71,7 @@ export default function TeamsPage() {
             padding: '10px 18px',
             background: 'none', border: 'none', cursor: 'pointer',
             fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600,
-            color: tab === key ? 'var(--accent-bright)' : 'var(--text-secondary)',
+            color: tab === key ? 'var(--accent-bright)' : 'var(--text-glow)',
             borderBottom: tab === key ? '2px solid var(--accent)' : '2px solid transparent',
             marginBottom: -1, transition: 'color 0.15s',
           }}>
@@ -151,7 +151,7 @@ export default function TeamsPage() {
                 fontSize: 20, flexShrink: 0,
               }}><img src="/images/team.png" alt="teams" width={'24px'} height={'24px'}/></div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 700, fontSize: 16 }}>{inv.team_name}</div>
+                <div style={{ fontWeight: 700, fontSize: 18, color: 'var(--text-mid)' }}>{inv.team_name}</div>
                 <div style={{ fontSize: 13, color: 'var(--text-dark)', margin: '4px 0' }}>
                   Invited by <strong>{inv.inviter_name}</strong> ({inv.inviter_talent?.replace('_', ' ')}) · {formatTime(inv.created_at)}
                 </div>
@@ -166,7 +166,7 @@ export default function TeamsPage() {
               </div>
               <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
                 <button className="btn btn-success btn-sm" onClick={() => handleInviteResponse(inv.id, 'accepted')}>Accept</button>
-                <button className="btn btn-ghost btn-sm" onClick={() => handleInviteResponse(inv.id, 'rejected')}>Decline</button>
+                <button className="btn btn-ghost2 btn-sm" onClick={() => handleInviteResponse(inv.id, 'rejected')}>Decline</button>
               </div>
             </div>
           ))}

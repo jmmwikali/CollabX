@@ -242,7 +242,7 @@ export default function LandingPage() {
           Collab<span style={{ background: 'linear-gradient(135deg,#9DD9FD,#B9E2FF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>X</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <Link to="/login" className="btn btn-ghost" style={{fontSize: '15px'}}>Sign In</Link>
+          <Link to="/login" className="btn btn-ghost" style={{fontSize: '15px', marginBottom: '10px'}}>Sign In</Link>
           <Link to="/register" className="btn btn-primary">Get Started →</Link>
         </div>
       </nav>

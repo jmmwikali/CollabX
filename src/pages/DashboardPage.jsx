@@ -101,7 +101,7 @@ export default function DashboardPage() {
             {invitations.map(inv => (
               <div key={inv.id} className="card card-sm" style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 600 }}>{inv.team_name}</div>
+                  <div style={{ fontWeight: 600, color: 'var(--text-mid)' }}>{inv.team_name}</div>
                   <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
                     Invited by <strong>{inv.inviter_name}</strong> · {formatTime(inv.created_at)}
                   </div>
@@ -109,7 +109,7 @@ export default function DashboardPage() {
                 </div>
                 <div style={{ display: 'flex', gap: 8 }}>
                   <button className="btn btn-sm btn-success" onClick={() => handleInviteResponse(inv.id, 'accepted')}>Accept</button>
-                  <button className="btn btn-sm btn-ghost" onClick={() => handleInviteResponse(inv.id, 'rejected')}>Decline</button>
+                  <button className="btn btn-sm btn-ghost2" onClick={() => handleInviteResponse(inv.id, 'rejected')}>Decline</button>
                 </div>
               </div>
             ))}
@@ -129,7 +129,7 @@ export default function DashboardPage() {
                   borderLeft: n.is_read ? 'none' : '2px solid var(--accent)',
                   padding: '12px 14px',
                 }}>
-                  <div style={{ fontWeight: 600, fontSize: 13 }}>{n.title}</div>
+                  <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--text-mid)' }}>{n.title}</div>
                   {n.body && <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>{n.body.length > 70 ? `${n.body.slice(0, 70)}...` : n.body}</div>}
                   <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 4 }}>{formatTime(n.created_at)}</div>
                 </div>
@@ -204,7 +204,7 @@ export default function DashboardPage() {
                 <div key={person.id} className="card card-sm" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <Avatar user={person} size={36} />
                   <div style={{ flex: 1, overflow: 'hidden' }}>
-                    <div style={{ fontWeight: 600, fontSize: 13, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{person.name}</div>
+                    <div style={{ fontWeight: 600, fontSize: 13, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--text-mid)' }}>{person.name}</div>
                     <TalentBadge talent={person.primary_talent} />
                   </div>
                   <RepBadge points={person.reputation_points} />

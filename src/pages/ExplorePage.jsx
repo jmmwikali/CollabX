@@ -105,7 +105,7 @@ export default function ExplorePage() {
               <div style={{ display: 'flex', gap: 12 }}>
                 <Avatar user={u} size={48} />
                 <div style={{ flex: 1, overflow: 'hidden' }}>
-                  <div style={{ fontWeight: 700, fontSize: 15 }}>{u.name}</div>
+                  <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text-mid)' }}>{u.name}</div>
                   <TalentBadge talent={u.primary_talent} />
                 </div>
               </div>
@@ -145,11 +145,11 @@ export default function ExplorePage() {
           <div className="alert alert-success">✅ Invitation sent successfully!</div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 14 }}>
+            <p style={{ color: 'var(--text-dark)', fontSize: 14 }}>
               Choose a team to invite <strong>{inviteModal?.name}</strong> to:
             </p>
             {myTeams.length === 0 ? (
-              <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '20px 0' }}>
+              <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '20px 0' }}>
                 You need to create a team first.
               </div>
             ) : (
@@ -157,7 +157,7 @@ export default function ExplorePage() {
                 {myTeams.map(team => (
                   <div key={team.id} className="card card-sm" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 600 }}>{team.name}</div>
+                      <div style={{ fontWeight: 600, color: 'var(--text-mid)' }}>{team.name}</div>
                       <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{team.member_count} members</div>
                     </div>
                     <button className="btn btn-sm btn-primary" onClick={() => handleInvite(team.id)}>Invite</button>
