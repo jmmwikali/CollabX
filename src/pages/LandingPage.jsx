@@ -1,6 +1,7 @@
 // import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../css/LandingPage.css'
+import { useEffect } from 'react';
 
 const TALENTS = [
   { key: 'frontend', icon: '⚡', label: 'Frontend Dev', color: '#60a5fa' },
