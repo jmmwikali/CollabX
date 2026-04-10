@@ -7,7 +7,7 @@ const TALENTS = ['', 'frontend','backend','fullstack','designer','ui_ux','writer
 const LEVELS = ['', 'beginner', 'intermediate', 'advanced'];
 
 export default function ExplorePage() {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({ talent: '', skill_level: '', search: '' });

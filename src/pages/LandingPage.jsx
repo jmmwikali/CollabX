@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+// import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../css/LandingPage.css'
 
@@ -139,32 +139,32 @@ export default function LandingPage() {
   svg.appendChild(spark);
 
   // Lit segments: each is a line with a glow that fades
-  function createLitSegment(ax, ay, bx, by) {
-    const line = document.createElementNS(ns, 'line');
-    line.setAttribute('x1', ax); line.setAttribute('y1', ay);
-    line.setAttribute('x2', bx); line.setAttribute('y2', by);
-    line.setAttribute('stroke', 'rgba(255,255,255,0.85)');
-    line.setAttribute('stroke-width', '1.8');
-    line.setAttribute('filter', 'url(#glow)');
-    line.setAttribute('opacity', '1');
-    animGroup.appendChild(line);
-    return line;
-  }
+  // function createLitSegment(ax, ay, bx, by) {
+  //   const line = document.createElementNS(ns, 'line');
+  //   line.setAttribute('x1', ax); line.setAttribute('y1', ay);
+  //   line.setAttribute('x2', bx); line.setAttribute('y2', by);
+  //   line.setAttribute('stroke', 'rgba(255,255,255,0.85)');
+  //   line.setAttribute('stroke-width', '1.8');
+  //   line.setAttribute('filter', 'url(#glow)');
+  //   line.setAttribute('opacity', '1');
+  //   animGroup.appendChild(line);
+  //   return line;
+  // }
 
   // Animate
   let startTime = null;
-  const segmentTime = CYCLE_DURATION / drawOrder.length;
+  // const segmentTime = CYCLE_DURATION / drawOrder.length;
 
   function easeInOut(t) {
     return t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
   }
 
   // Track lit lines
-  let litLines = [];
+  // let litLines = [];
 
   function animate(ts) {
     if (!startTime) startTime = ts;
-    const elapsed = (ts - startTime) % (CYCLE_DURATION + FADE_LINGER * drawOrder.length);
+    // const elapsed = (ts - startTime) % (CYCLE_DURATION + FADE_LINGER * drawOrder.length);
     const totalTime = CYCLE_DURATION + FADE_LINGER;
     const cycleTime = (ts - startTime) % (totalTime);
 

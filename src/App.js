@@ -19,12 +19,12 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
-const PublicRoute = ({ children }) => {
-  const { user, loading } = useAuth();
-  if (loading) return <div className="app-loading"><div className="loader-ring"/></div>;
-  if (user) return <Navigate to="/dashboard" replace />;
-  return children;
-};
+// const PublicRoute = ({ children }) => {
+//   const { user, loading } = useAuth();
+//   if (loading) return <div className="app-loading"><div className="loader-ring"/></div>;
+//   if (user) return <Navigate to="/dashboard" replace />;
+//   return children;
+// };
 
 function AppRoutes() {
   return (
