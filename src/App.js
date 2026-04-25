@@ -11,6 +11,7 @@ import ProfilePage from './pages/ProfilePage';
 import './App.css';
 import AuthLayout from './pages/AuthLayout';
 import OnboardingPage from './pages/OnboardingPage';
+import UserProfile from './pages/UserProfile';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -39,6 +40,7 @@ function AppRoutes() {
       <Route path="/teams/:id" element={<ProtectedRoute><TeamDetailPage /></ProtectedRoute>} />
       <Route path="/messages" element={<ProtectedRoute><MessagesPage /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+      <Route path="/userprofile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

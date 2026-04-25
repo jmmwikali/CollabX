@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { usersAPI, teamsAPI } from '../services/api';
 import { AppShell, Avatar, TalentBadge, RepBadge, Modal, LoadingSpinner } from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const TALENTS = ['', 'frontend','backend','fullstack','designer','ui_ux','writer','marketer','devops','mobile','data_scientist','product_manager'];
 const LEVELS = ['', 'beginner', 'intermediate', 'advanced'];
@@ -15,6 +16,7 @@ export default function ExplorePage() {
   const [inviteModal, setInviteModal] = useState(null);
   const [inviteMsg, setInviteMsg] = useState('');
   const [inviteStatus, setInviteStatus] = useState('');
+  const navigate = useNavigate();
 
   // FIX: Removed useCallback wrapper for fetchUsers — it was causing a
   // re-creation loop where fetchUsers reference change re-triggered the
@@ -99,9 +101,9 @@ export default function ExplorePage() {
 
       {/* User grid */}
       {loading ? <LoadingSpinner /> : (
-        <div className="grid-3" style={{ gap: 16 }}>
+        <div className="grid-2" style={{ gap: 16 }} >
           {users.map(u => (
-            <div key={u.id} className="card" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <div key={u.id} className="card" style={{ display: 'flex', flexDirection: 'column', gap: 14 }} onClick={() => navigate("/userprofile", {state : {u}})}>
               <div style={{ display: 'flex', gap: 12 }}>
                 <Avatar user={u} size={48} />
                 <div style={{ flex: 1, overflow: 'hidden' }}>

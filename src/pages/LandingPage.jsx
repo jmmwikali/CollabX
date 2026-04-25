@@ -350,13 +350,13 @@ export default function LandingPage() {
 
       {/* FEATURES */}
       <section style={{ padding: '60px 48px', maxWidth: '100%' }}>
-        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 40, fontWeight: 800, textAlign: 'center', marginBottom: 48, letterSpacing: '-1px', color: '#181b20' }}>
+        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 40, fontWeight: 800, textAlign: 'center', marginBottom: 20, letterSpacing: '-1px', color: '#181b20' }}>
           Everything your team needs
         </h2>
-        <div className="grid-4" style={{ gap: 20 }}>
+        <div className="grid-2" style={{ gap: 20 }}>
           {FEATURES.map(f => (
             <div key={f.title} className="cards" style={{ gap: 12, border: '1.5px groove rgba(222, 222, 222, 0.44)'}}>
-              <img src={f.icon} alt={f.title} style={{ width: 50, height: 50 }} />
+              <img src={f.icon} alt={f.title} style={{ width: 60, height: 60, backgroundColor: '#fff', padding: 10, borderRadius: 15}} />
               <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 22, color: '#003083' }}>{f.title}</h2>
               <p style={{ fontSize: 15, color: '#181b20', lineHeight: 1.6 }}>{f.desc}</p>
             </div>

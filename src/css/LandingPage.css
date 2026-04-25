@@ -321,7 +321,7 @@
 }
 
 .cards {
-  background: var(--bg-cards);
+  background: #ffffff6c;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 26px;
@@ -344,6 +344,6 @@
 .cards:hover {
   box-shadow: var(--shadow-lift);
   transform: translateY(-2px);
-  background: var(--bg-elevated);
+  background: rgba(255, 255, 255, 0.584);
 }
 
