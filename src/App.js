@@ -8,6 +8,7 @@ import TeamsPage from './pages/TeamsPage';
 import TeamDetailPage from './pages/TeamDetailPage';
 import MessagesPage from './pages/MessagesPage';
 import ProfilePage from './pages/ProfilePage';
+import SocialHubPage from './pages/SocialHubPage';   // ← NEW
 import './App.css';
 import AuthLayout from './pages/AuthLayout';
 import OnboardingPage from './pages/OnboardingPage';
@@ -19,13 +20,6 @@ const ProtectedRoute = ({ children }) => {
   if (!user) return <Navigate to="/login" replace />;
   return children;
 };
-
-// const PublicRoute = ({ children }) => {
-//   const { user, loading } = useAuth();
-//   if (loading) return <div className="app-loading"><div className="loader-ring"/></div>;
-//   if (user) return <Navigate to="/dashboard" replace />;
-//   return children;
-// };
 
 function AppRoutes() {
   return (
@@ -41,6 +35,7 @@ function AppRoutes() {
       <Route path="/messages" element={<ProtectedRoute><MessagesPage /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
       <Route path="/userprofile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+      <Route path="/social" element={<ProtectedRoute><SocialHubPage /></ProtectedRoute>} />   {/* ← NEW */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

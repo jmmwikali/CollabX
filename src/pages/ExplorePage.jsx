@@ -123,7 +123,10 @@ export default function ExplorePage() {
                   {u.skill_level}
                 </span>
                 <RepBadge points={u.reputation_points} />
-                <button className="btn btn-sm btn-primary" style={{ marginLeft: 'auto' }} onClick={() => openInvite(u)}>
+                <button className="btn btn-sm btn-primary" style={{ marginLeft: 'auto' }} onClick={(e) => { e.stopPropagation(); navigate('/messages', { state: { selectedUser: u } }); }}>
+                  💬 Message
+                </button>
+                <button className="btn btn-sm btn-primary" onClick={(e) => { e.stopPropagation(); openInvite(u); }}>
                   + Invite
                 </button>
               </div>

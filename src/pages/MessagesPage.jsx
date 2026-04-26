@@ -2,9 +2,11 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { messagesAPI } from '../services/api';
 import { AppShell, Avatar, formatTime, LoadingSpinner } from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
+import { useLocation } from 'react-router-dom';
 
 export default function MessagesPage() {
   const { user } = useAuth();
+  const location = useLocation();
   const [conversations, setConversations] = useState([]);
   const [activeConv, setActiveConv] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -24,10 +26,35 @@ export default function MessagesPage() {
   useEffect(() => {
     messagesAPI.getConversations()
       .then(res => {
-        if (isMountedRef.current) setConversations(res.data.conversations || []);
+        if (!isMountedRef.current) return;
+        const convs = res.data.conversations || [];
+        setConversations(convs);
+
+        // If navigated from Explore with a selected user, pre-select or create a conversation
+        const selectedUser = location.state?.selectedUser;
+        if (selectedUser) {
+          const existing = convs.find(c => c.other_user_id === selectedUser.id);
+          if (existing) {
+            setActiveConv(existing);
+          } else {
+            // Create a synthetic conversation entry so the user appears selected in the list
+            const syntheticConv = {
+              other_user_id: selectedUser.id,
+              other_user_name: selectedUser.name,
+              other_user_avatar: selectedUser.avatar_url,
+              primary_talent: selectedUser.primary_talent,
+              last_message: null,
+              last_message_at: null,
+              unread_count: 0,
+            };
+            setConversations(prev => [syntheticConv, ...prev]);
+            setActiveConv(syntheticConv);
+          }
+        }
       })
       .catch(console.error)
       .finally(() => { if (isMountedRef.current) setLoading(false); });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadMessages = useCallback(async (userId) => {

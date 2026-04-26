@@ -108,6 +108,11 @@ export function Sidebar({ pendingInvites = 0, unreadDms = 0 }) {
           {unreadDms > 0 && <span className="nav-badge">{unreadDms}</span>}
         </NavLink>
 
+        {/* ── NEW: Social Hub nav item ── */}
+        <NavLink to="/social" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+          <span className="nav-icon"><img src="/images/social.png" alt="profile" width={"19px"} height={"19px"} /></span> Social Hub
+        </NavLink>
+
         <span className="nav-section-label">Account</span>
         <NavLink to="/profile" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
           <span className="nav-icon"><img src="/images/user.png" alt="profile" width={"19px"} height={"19px"} /></span> Profile
@@ -182,7 +187,7 @@ export function Modal({ isOpen, onClose, title, children }) {
       <div className="modal">
         <div className="modal-header">
           <h2 className="modal-title">{title}</h2>
-          <button className="btn btn-ghost btn-icon" onClick={onClose} style={{ fontSize: 18 }}>✕</button>
+          <button className="btn btn-ghost btn-icon" onClick={onClose} style={{ fontSize: 18, color: "var(--text-mid)"}}>✕</button>
         </div>
         {children}
       </div>
