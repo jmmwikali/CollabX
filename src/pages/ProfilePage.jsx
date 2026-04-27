@@ -21,6 +21,12 @@ export default function ProfilePage() {
     primary_talent: user?.primary_talent || 'other',
     skill_level: user?.skill_level || 'beginner',
     avatar_url: user?.avatar_url || '',
+    portfolio_links: (() => {
+      try {
+        const raw = user?.portfolio_links;
+        return Array.isArray(raw) ? raw : typeof raw === 'string' ? JSON.parse(raw) : [];
+      } catch { return []; }
+    })(),
   });
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState('');
@@ -29,18 +35,25 @@ export default function ProfilePage() {
     e.preventDefault();
     setSaving(true); setSaveStatus('');
     try {
-      const res = await authAPI.updateProfile(form);
+      const payload = {
+        ...form,
+        portfolio_links: form.portfolio_links.filter(l => l.trim()),
+      };
+      const res = await authAPI.updateProfile(payload);
       updateUser(res.data.user);
       setSaveStatus('success');
       setEditing(false);
-      
-      setTimeout(() => {setSaveStatus(''); }, 1000)
+      setTimeout(() => { setSaveStatus(''); }, 1000);
     } catch (err) {
       setSaveStatus(err.response?.data?.message || 'Failed to save.');
     } finally {
       setSaving(false);
     }
   };
+
+  const addLink = () => setForm(f => ({ ...f, portfolio_links: [...f.portfolio_links, ''] }));
+  const removeLink = (i) => setForm(f => ({ ...f, portfolio_links: f.portfolio_links.filter((_, idx) => idx !== i) }));
+  const updateLink = (i, val) => setForm(f => ({ ...f, portfolio_links: f.portfolio_links.map((l, idx) => idx === i ? val : l) }));
 
   const portfolioLinks = (() => {
     try { return typeof user?.portfolio_links === 'string' ? JSON.parse(user.portfolio_links) : user?.portfolio_links || []; }
@@ -94,6 +107,38 @@ export default function ProfilePage() {
                 <label className="form-label">Bio</label>
                 <textarea className="form-textarea" value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })} placeholder="Tell the community about yourself..." />
               </div>
+
+              {/* Portfolio Links */}
+              <div className="form-group">
+                <label className="form-label">Portfolio Links</label>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {form.portfolio_links.map((link, i) => (
+                    <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                      <span style={{ fontSize: 16, flexShrink: 0 }}>🔗</span>
+                      <input
+                        className="form-input"
+                        placeholder="https://github.com/you"
+                        value={link}
+                        onChange={e => updateLink(i, e.target.value)}
+                        style={{ flex: 1 }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeLink(i)}
+                        style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: 18, lineHeight: 1, padding: '0 4px', flexShrink: 0 }}
+                      >✕</button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-sm"
+                    onClick={addLink}
+                    style={{ alignSelf: 'flex-start', marginTop: 4 }}
+                  >
+                    + Add Link
+                  </button>
+                </div>
+              </div>
               <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
                 <button type="button" className="btn btn-ghost2" onClick={() => setEditing(false)}>Cancel</button>
                 <button type="submit" className="btn btn-primary" disabled={saving}>
@@ -106,7 +151,7 @@ export default function ProfilePage() {
 
         {/* Profile card */}
         <div className="card" style={{ marginBottom: 24 }}>
-          <div className="profile-header" style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
+          <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
             <Avatar user={user} size={80} />
             <div style={{ flex: 1 }}>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 800, color: 'var(--text-mid)' }}>{user?.name}</div>

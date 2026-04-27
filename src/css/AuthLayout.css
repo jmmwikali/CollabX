@@ -472,8 +472,9 @@
   .panel-bright { display: none !important; }
   .overlay { display: none !important; }
 
-  /* Dark form panel takes full width */
-  .panel-dark {
+  /* Dark form panel takes full width — including when active (register) */
+  .panel-dark,
+  .auth-container.active .panel-dark {
     position: relative !important;
     width: 100% !important;
     left: 0 !important;

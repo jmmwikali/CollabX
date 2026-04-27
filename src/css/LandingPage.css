@@ -348,6 +348,116 @@
 }
 
 
+/* ══ TABLET / SMALL LAPTOP (720px – 1024px) ══ */
+@media (min-width: 721px) and (max-width: 1024px) {
+
+  /* Hero layout: stack vertically instead of colliding */
+  .hero {
+    flex-direction: column;
+    align-items: center;
+    padding: 100px 40px 60px;
+    min-height: auto;
+    gap: 40px;
+  }
+
+  /* Left text: centre-align and take full width */
+  .left {
+    max-width: 580px;
+    text-align: center;
+    animation: fadeUp 0.7s ease both;
+  }
+
+  .subtext {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  /* Scale headline down slightly */
+  .headline {
+    font-size: 48px;
+  }
+
+  /* Shrink decorative ampersand so it doesn't bleed */
+  .ampersand-bg {
+    font-size: 320px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.10;
+  }
+
+  /* Cards area: shrink and centre below the text */
+  .cards-area {
+    position: relative;
+    right: auto;
+    top: auto;
+    transform: none;
+    width: 500px;
+    height: 420px;
+    margin: 0 auto;
+  }
+
+  /* Rescale individual cards */
+  .card-linkedin {
+    width: 210px;
+    height: 180px;
+    top: 0px;
+    left: 40px;
+  }
+
+  .card-figma {
+    width: 190px;
+    height: 165px;
+    top: 30px;
+    right: 0px;
+  }
+
+  .card-medium {
+    width: 200px;
+    height: 175px;
+    bottom: 20px;
+    left: 0px;
+  }
+
+  .card-peerlist {
+    width: 205px;
+    height: 178px;
+    bottom: 0px;
+    right: 20px;
+  }
+
+  .card-name { font-size: 20px; }
+  .card-username { font-size: 13px; }
+  .card-icon { width: 44px; height: 44px; font-size: 22px; }
+
+  /* CTA buttons: stack on narrow tablets */
+  .btn-lg {
+    width: 100% !important;
+    max-width: 340px;
+  }
+
+  /* Features grid: 1 column on tight tablets, 2 on wider ones */
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  /* Feature section padding */
+  section[style] {
+    padding-left: 28px !important;
+    padding-right: 28px !important;
+  }
+
+  /* Talent cards strip */
+  .talent-card {
+    height: 60px;
+    font-size: 14px;
+  }
+
+  /* Nav: tighten horizontal padding */
+  nav {
+    padding: 12px 24px !important;
+  }
+}
+
 /* ══ MOBILE RESPONSIVE ══ */
 @media (max-width: 768px) {
 
@@ -357,7 +467,7 @@
 
   .hero {
     padding: 20px 20px 40px;
-    min-height: 100vh;
+    min-height: 50vh;
     align-items: flex-start;
     padding-top: 80px;
   }
@@ -383,12 +493,36 @@
     max-width: 100%;
   }
 
-  /* Nav bar — prevent overflow, compress content */
-  nav, header {
-    padding: 0 16px !important;
-    flex-wrap: nowrap !important;
-    overflow: hidden;
+  /* Nav bar — compress to fit logo + buttons on one row */
+  nav {
+    padding: 10px 14px !important;
+    top: 6px !important;
+    left: 8px !important;
+    right: 8px !important;
+    gap: 8px;
   }
+
+  /* Shrink logo text */
+  nav > div:first-child {
+    font-size: 24px !important;
+  }
+
+  nav > div:first-child img {
+    width: 25px !important;
+    height: 25px !important;
+  }
+
+  /* Shrink nav buttons */
+  nav .btn {
+    font-size: 15px !important;
+    padding: 6px 12px !important;
+    margin-bottom: 0 !important;
+  }
+
+  .nav-cta {
+  display: none !important;
+}
+
 
   /* Talent scroll strip — ensure it works on mobile */
   .scroll-wrapper {
@@ -399,5 +533,30 @@
     height: 56px;
     font-size: 13px;
     padding: 6px 12px;
+  }
+
+  /* Features section heading — scale down */
+  .features-heading {
+    font-size: 26px !important;
+  }
+
+  /* Features section padding */
+  .features-section {
+    padding: 40px 20px !important;
+  }
+
+  /* CTA section — fix overflow */
+  .cta-section {
+    padding: 40px 16px !important;
+  }
+
+  .cta-card {
+    padding: 32px 24px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .cta-card h2 {
+    font-size: 24px !important;
   }
 }

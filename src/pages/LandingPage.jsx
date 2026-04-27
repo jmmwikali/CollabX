@@ -232,7 +232,7 @@ export default function LandingPage() {
       {/* NAV */}
       <nav style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '15px 48px', borderBottom: '1px solid var(--border)',
+        padding: '10px 48px', borderBottom: '1px solid var(--border)',
         background: 'rgba(33, 52, 89, 0.45)', backdropFilter: 'blur(10px)',
         position: 'fixed', top: '10px', left: '15px', right: '15px', zIndex: 100,
         borderRadius: '15px',
@@ -244,7 +244,7 @@ export default function LandingPage() {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <Link to="/login" className="btn btn-ghost" style={{fontSize: '15px', marginBottom: '10px'}}>Sign In</Link>
-          <Link to="/register" className="btn btn-primary">Get Started →</Link>
+          <Link to="/register" className="btn btn-primary nav-cta">Get Started →</Link>
         </div>
       </nav>
 
@@ -349,8 +349,8 @@ export default function LandingPage() {
 </section>
 
       {/* FEATURES */}
-      <section style={{ padding: '60px 48px', maxWidth: '100%' }}>
-        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 40, fontWeight: 800, textAlign: 'center', marginBottom: 20, letterSpacing: '-1px', color: '#181b20' }}>
+      <section className="features-section" style={{ padding: '60px 48px', maxWidth: '100%' }}>
+        <h2 className="features-heading" style={{ fontFamily: 'var(--font-display)', fontSize: 40, fontWeight: 800, textAlign: 'center', marginBottom: 20, letterSpacing: '-1px', color: '#181b20' }}>
           Everything your team needs
         </h2>
         <div className="grid-2" style={{ gap: 20 }}>
@@ -365,8 +365,8 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section style={{ padding: '80px 48px', textAlign: 'center' }}>
-        <div style={{
+      <section className="cta-section" style={{ padding: '80px 48px', textAlign: 'center' }}>
+        <div className="cta-card" style={{
           display: 'inline-block', padding: '48px 64px',
           background: 'linear-gradient(135deg, rgba(59, 131, 246, 0.25), rgba(138, 92, 246, 0.25))',
           border: '1px solid rgba(59,130,246,0.2)',
