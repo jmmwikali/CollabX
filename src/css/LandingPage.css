@@ -347,3 +347,57 @@
   background: rgba(255, 255, 255, 0.584);
 }
 
+
+/* ══ MOBILE RESPONSIVE ══ */
+@media (max-width: 768px) {
+
+  /* Hide floating cards entirely */
+  .cards-area { display: none !important; }
+  #web-canvas { display: none !important; }
+
+  .hero {
+    padding: 20px 20px 40px;
+    min-height: 100vh;
+    align-items: flex-start;
+    padding-top: 80px;
+  }
+
+  /* Big decorative ampersand — scale down */
+  .ampersand-bg {
+    font-size: 220px;
+    left: -20px;
+    opacity: 0.12;
+  }
+
+  .left {
+    max-width: 100%;
+  }
+
+  .headline {
+    font-size: 38px;
+    margin-bottom: 18px;
+  }
+
+  .subtext {
+    font-size: 15px;
+    max-width: 100%;
+  }
+
+  /* Nav bar — prevent overflow, compress content */
+  nav, header {
+    padding: 0 16px !important;
+    flex-wrap: nowrap !important;
+    overflow: hidden;
+  }
+
+  /* Talent scroll strip — ensure it works on mobile */
+  .scroll-wrapper {
+    overflow: hidden;
+  }
+
+  .talent-card {
+    height: 56px;
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+}

@@ -13,9 +13,9 @@ export default function MessagesPage() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [showChat, setShowChat] = useState(false);
   const messagesEndRef = useRef(null);
   const pollRef = useRef(null);
-  // FIX: Guard against state updates on unmounted component
   const isMountedRef = useRef(true);
 
   useEffect(() => {
@@ -30,14 +30,13 @@ export default function MessagesPage() {
         const convs = res.data.conversations || [];
         setConversations(convs);
 
-        // If navigated from Explore with a selected user, pre-select or create a conversation
         const selectedUser = location.state?.selectedUser;
         if (selectedUser) {
           const existing = convs.find(c => c.other_user_id === selectedUser.id);
           if (existing) {
             setActiveConv(existing);
+            setShowChat(true);
           } else {
-            // Create a synthetic conversation entry so the user appears selected in the list
             const syntheticConv = {
               other_user_id: selectedUser.id,
               other_user_name: selectedUser.name,
@@ -49,6 +48,7 @@ export default function MessagesPage() {
             };
             setConversations(prev => [syntheticConv, ...prev]);
             setActiveConv(syntheticConv);
+            setShowChat(true);
           }
         }
       })
@@ -68,10 +68,6 @@ export default function MessagesPage() {
   useEffect(() => {
     if (activeConv) {
       loadMessages(activeConv.other_user_id);
-      // FIX: Removed messagesAPI.markAsRead — this method does not exist in api.js.
-      // If you want read receipts, add: markAsRead: (userId) => api.put(`/messages/direct/${userId}/read`)
-      // to messagesAPI in api.js, then uncomment the line below:
-      // messagesAPI.markAsRead(activeConv.other_user_id).catch(() => {});
       clearInterval(pollRef.current);
       pollRef.current = setInterval(() => loadMessages(activeConv.other_user_id), 4000);
     }
@@ -82,6 +78,11 @@ export default function MessagesPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  const selectConv = (conv) => {
+    setActiveConv(conv);
+    setShowChat(true);
+  };
+
   const sendMessage = async e => {
     e.preventDefault();
     if (!input.trim() || !activeConv || sending) return;
@@ -89,7 +90,6 @@ export default function MessagesPage() {
     const content = input.trim();
     try {
       const res = await messagesAPI.sendDirectMessage(activeConv.other_user_id, { content });
-      // FIX: Check isMounted before updating state after async call
       if (isMountedRef.current) {
         setMessages(prev => [...prev, res.data.message]);
         setInput('');
@@ -105,25 +105,37 @@ export default function MessagesPage() {
     }
   };
 
+  const unreadTotal = conversations.reduce((a, c) => a + (c.unread_count || 0), 0);
+
   return (
-    <AppShell title="Messages" unreadDms={conversations.reduce((a, c) => a + (c.unread_count || 0), 0)}>
-      <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: 16, height: 'calc(100vh - 140px)' }}>
+    <AppShell title="Messages" unreadDms={unreadTotal}>
+      <div
+        className="messages-layout"
+        style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: 16, height: 'calc(100vh - 140px)' }}
+      >
 
         {/* Conversations list */}
-        <div className="card" style={{ padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ padding: '16px', borderBottom: '1px solid var(--border)', fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--text-secondary)'}}>
+        <div
+          className={`card messages-conv-panel${showChat ? ' hidden-mobile' : ''}`}
+          style={{ padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+        >
+          <div style={{ padding: '16px', borderBottom: '1px solid var(--border)', fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--text-secondary)' }}>
             Conversations
           </div>
           <div style={{ flex: 1, overflowY: 'auto' }}>
-            {loading ? <LoadingSpinner size={24} /> : conversations.length === 0 ? (
+            {loading ? (
+              <LoadingSpinner size={24} />
+            ) : conversations.length === 0 ? (
               <div className="empty-state" style={{ padding: '40px 20px' }}>
-                <div style={{ fontSize: 28 }}><img src="/images/messages.png" alt="messages" width={"40px"} height={"40px"} /></div>
+                <div style={{ fontSize: 28 }}>
+                  <img src="/images/messages.png" alt="messages" width="40" height="40" />
+                </div>
                 <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>No conversations yet</div>
               </div>
             ) : conversations.map(conv => (
               <div
                 key={conv.other_user_id}
-                onClick={() => setActiveConv(conv)}
+                onClick={() => selectConv(conv)}
                 style={{
                   padding: '12px 16px',
                   cursor: 'pointer',
@@ -153,20 +165,44 @@ export default function MessagesPage() {
           </div>
         </div>
 
-        {/* Message area */}
-        <div className="card" style={{ padding: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        {/* Chat panel */}
+        <div
+          className={`card messages-chat-panel${showChat ? '' : ' hidden-mobile'}`}
+          style={{ padding: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
+        >
           {!activeConv ? (
             <div className="empty-state" style={{ height: '100%' }}>
-              <div className="empty-state-icon"><img src="/images/messages.png" alt="messages" width={"40px"} height={"40px"} /></div>
+              <div className="empty-state-icon">
+                <img src="/images/messages.png" alt="messages" width="40" height="40" />
+              </div>
               <div className="empty-state-text">Select a conversation to start messaging</div>
             </div>
           ) : (
             <>
               <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 10 }}>
+                <button
+                  className="messages-back-btn"
+                  onClick={() => setShowChat(false)}
+                  style={{
+                    display: 'none',
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--blue)',
+                    fontSize: 22,
+                    cursor: 'pointer',
+                    padding: '0 8px 0 0',
+                    lineHeight: 1,
+                    flexShrink: 0,
+                  }}
+                >
+                  ←
+                </button>
                 <Avatar user={{ name: activeConv.other_user_name, avatar_url: activeConv.other_user_avatar }} size={36} />
                 <div>
                   <div style={{ fontWeight: 700 }}>{activeConv.other_user_name}</div>
-                  <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'capitalize' }}>{activeConv.primary_talent?.replace('_', ' ')}</div>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'capitalize' }}>
+                    {activeConv.primary_talent?.replace('_', ' ')}
+                  </div>
                 </div>
               </div>
 
@@ -178,13 +214,14 @@ export default function MessagesPage() {
                   return (
                     <div key={msg.id} style={{ display: 'flex', flexDirection: isMe ? 'row-reverse' : 'row', gap: 8, alignItems: 'flex-end' }}>
                       {!isMe && <Avatar user={{ name: msg.sender_name, avatar_url: msg.sender_avatar }} size={28} />}
-                      <div style={{ maxWidth: '60%' }}>
+                      <div style={{ maxWidth: '70%' }}>
                         <div style={{
                           padding: '9px 14px',
                           borderRadius: isMe ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
                           background: isMe ? 'linear-gradient(135deg, var(--accent), #2563eb)' : 'var(--bg-glass)',
                           color: isMe ? 'white' : 'var(--text-muted)',
-                          fontSize: 14, lineHeight: 1.5,
+                          fontSize: 14,
+                          lineHeight: 1.5,
                         }}>
                           {msg.content}
                         </div>

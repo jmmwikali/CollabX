@@ -876,18 +876,280 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   RESPONSIVE (structure unchanged — only inherits new colors)
+   RESPONSIVE
    ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Tablet (≤ 900px) ── */
 @media (max-width: 900px) {
   .sidebar { transform: translateX(-100%); transition: transform var(--transition-slow); }
-  .sidebar.open { transform: none; box-shadow: 8px 0 32px rgba(0, 0, 0, 0.6); }
+  .sidebar.open { transform: none; box-shadow: 8px 0 32px rgba(0,0,0,0.6); }
   .main-content { margin-left: 0; }
   .grid-3 { grid-template-columns: repeat(2, 1fr); }
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
   .page-body { padding: 20px; }
 }
 
-@media (max-width: 600px) {
-  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
-  .page-body { padding: 16px; }
+/* ── Mobile (≤ 768px) ── */
+@media (max-width: 768px) {
+
+  /* ── CSS variable overrides ── */
+  :root {
+    --sidebar-w: 0px;
+    --topbar-h: 56px;
+  }
+
+  /* ── Hide desktop sidebar ── */
+  .sidebar { display: none !important; }
+
+  /* ── Main content fills screen, bottom-nav clearance ── */
+  .main-content {
+    margin-left: 0;
+    padding-bottom: 70px;
+  }
+
+  .page-body {
+    padding: 14px;
+  }
+
+  /* ── Topbar ── */
+  .topbar {
+    padding: 0 14px;
+    height: var(--topbar-h);
+  }
+
+  .topbar-title { font-size: 16px; }
+
+  /* ────────────────────────────────────────────────────────────────
+     BOTTOM NAV
+  ──────────────────────────────────────────────────────────────── */
+  .bottom-nav {
+    display: flex !important;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 64px;
+    background: var(--bg-mid);
+    border-top: 1px solid var(--border);
+    z-index: 200;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 4px;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    flex: 1;
+    padding: 8px 4px;
+    border-radius: var(--radius);
+    color: var(--slate-400);
+    text-decoration: none;
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: color var(--transition-fast);
+    position: relative;
+  }
+
+  .bottom-nav-item.active { color: var(--blue-sky); }
+  .bottom-nav-item img { width: 22px; height: 22px; opacity: 0.6; }
+  .bottom-nav-item.active img { opacity: 1; }
+
+  .bottom-nav-badge {
+    position: absolute;
+    top: 4px;
+    right: calc(50% - 18px);
+    background: var(--coral);
+    color: #fff;
+    font-size: 8px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 99px;
+    min-width: 16px;
+    text-align: center;
+  }
+
+  /* ────────────────────────────────────────────────────────────────
+     GRIDS — all collapse to single column
+  ──────────────────────────────────────────────────────────────── */
+  .grid-2,
+  .grid-3,
+  .grid-4 { grid-template-columns: 1fr; }
+
+  /* ────────────────────────────────────────────────────────────────
+     CARDS
+  ──────────────────────────────────────────────────────────────── */
+  .card { padding: 14px; }
+  .card-sm { padding: 11px; }
+
+  /* ────────────────────────────────────────────────────────────────
+     MODAL — sheet style from bottom
+  ──────────────────────────────────────────────────────────────── */
+  .modal {
+    padding: 22px 16px;
+    max-width: 100%;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  /* ────────────────────────────────────────────────────────────────
+     SECTION HEADER
+  ──────────────────────────────────────────────────────────────── */
+  .section-header { flex-wrap: wrap; gap: 8px; }
+
+  /* ════════════════════════════════════════════════════════════════
+     DASHBOARD
+  ════════════════════════════════════════════════════════════════ */
+
+  /* Welcome banner stacks vertically */
+  .dashboard-welcome {
+    flex-direction: column !important;
+    gap: 14px !important;
+    padding: 18px !important;
+  }
+
+  /* Stats row becomes horizontal, left-aligned */
+  .dashboard-stats {
+    display: flex !important;
+    gap: 20px !important;
+    justify-content: flex-start !important;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .dashboard-stats > div {
+    text-align: left !important;
+  }
+
+  /* Stat number smaller on mobile */
+  .dashboard-stats .stat-value {
+    font-size: 22px !important;
+  }
+
+  /* Two-column layout → single column */
+  .dashboard-cols {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ════════════════════════════════════════════════════════════════
+     MESSAGES PAGE — one panel at a time
+  ════════════════════════════════════════════════════════════════ */
+  .messages-layout {
+    grid-template-columns: 1fr !important;
+    height: auto !important;
+    gap: 0 !important;
+  }
+
+  .messages-conv-panel {
+    display: flex !important;
+    height: calc(100vh - 140px);
+  }
+
+  .messages-conv-panel.hidden-mobile { display: none !important; }
+
+  .messages-chat-panel {
+    height: calc(100vh - 140px);
+  }
+
+  .messages-chat-panel.hidden-mobile { display: none !important; }
+
+  .messages-back-btn { display: flex !important; }
+
+  /* ════════════════════════════════════════════════════════════════
+     TEAM DETAIL PAGE — one panel at a time
+  ════════════════════════════════════════════════════════════════ */
+  .team-layout {
+    grid-template-columns: 1fr !important;
+    height: auto !important;
+    gap: 12px !important;
+  }
+
+  /* Sidebar (about + members) shows first by default */
+  .team-sidebar-panel {
+    display: flex !important;
+    flex-direction: column;
+    gap: 12px;
+    order: 1;
+  }
+
+  .team-sidebar-panel.hidden-mobile { display: none !important; }
+
+  /* Chat takes full viewport height when shown */
+  .team-chat-panel {
+    order: 2;
+    height: calc(100vh - 140px);
+  }
+
+  .team-chat-panel.hidden-mobile { display: none !important; }
+
+  /* Open Chat button shows on mobile */
+  .team-open-chat-btn { display: flex !important; }
+
+  /* Back button shows on mobile */
+  .messages-back-btn { display: flex !important; }
+
+  /* ════════════════════════════════════════════════════════════════
+     EXPLORE PAGE — filter bar stacks
+  ════════════════════════════════════════════════════════════════ */
+  .explore-filters {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .explore-filters .form-group {
+    flex: 1 1 100% !important;
+  }
+
+  /* ════════════════════════════════════════════════════════════════
+     PROFILE PAGE
+  ════════════════════════════════════════════════════════════════ */
+  .profile-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .profile-header .btn {
+    align-self: flex-end;
+  }
+
+  /* ════════════════════════════════════════════════════════════════
+     SOCIAL HUB — tabs scroll horizontally
+  ════════════════════════════════════════════════════════════════ */
+  .social-tabs {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+  .social-tabs::-webkit-scrollbar { display: none; }
+  .social-tabs button {
+    flex-shrink: 0;
+    padding: 7px 12px !important;
+    font-size: 12px !important;
+  }
+
+  /* ════════════════════════════════════════════════════════════════
+     TEAMS PAGE — invitation cards stack actions below
+  ════════════════════════════════════════════════════════════════ */
+  .invite-card-actions {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+    width: 100%;
+  }
+  .invite-card-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
 }

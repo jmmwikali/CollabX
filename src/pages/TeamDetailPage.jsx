@@ -18,6 +18,7 @@ export default function TeamDetailPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [inviteMsg, setInviteMsg] = useState('');
   const [inviteStatus, setInviteStatus] = useState('');
+  const [showChat, setShowChat] = useState(false);
   const messagesEndRef = useRef(null);
   const pollRef = useRef(null);
 
@@ -108,11 +109,16 @@ export default function TeamDetailPage() {
         )
       }
     >
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 24, height: 'calc(100vh - 140px)' }}>
+      <div className="team-layout" style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 24, height: 'calc(100vh - 140px)' }}>
 
         {/* Chat area */}
-        <div className="card" style={{ display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden' }}>
+        <div className={`card team-chat-panel${showChat ? '' : ' hidden-mobile'}`} style={{ display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden' }}>
           <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 12 }}>
+            <button
+              className="messages-back-btn"
+              onClick={() => setShowChat(false)}
+              style={{ display: 'none', background: 'none', border: 'none', color: 'var(--blue)', fontSize: 22, cursor: 'pointer', padding: '0 8px 0 0', lineHeight: 1, flexShrink: 0 }}
+            >←</button>
             <div style={{
               width: 40, height: 40, borderRadius: 'var(--radius)',
               background: 'linear-gradient(135deg, var(--accent), var(--accent2))',
@@ -191,7 +197,7 @@ export default function TeamDetailPage() {
         </div>
 
         {/* Sidebar */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div className={`team-sidebar-panel${showChat ? ' hidden-mobile' : ''}`} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <div className="card">
             <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, marginBottom: 10, color: 'var(--text-dark)'}}>About</div>
             <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
@@ -223,6 +229,14 @@ export default function TeamDetailPage() {
                 </div>
               ))}
             </div>
+            {/* Open Chat — mobile only */}
+            {isMember && (
+              <button
+                className="team-open-chat-btn btn btn-primary"
+                onClick={() => setShowChat(true)}
+                style={{ display: 'none', width: '100%', marginTop: 14 }}
+              >💬 Open Team Chat</button>
+            )}
           </div>
         </div>
       </div>

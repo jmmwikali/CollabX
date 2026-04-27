@@ -95,7 +95,7 @@ export default function ProfilePage() {
                 <textarea className="form-textarea" value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })} placeholder="Tell the community about yourself..." />
               </div>
               <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-                <button type="button" className="btn btn-ghost" onClick={() => setEditing(false)}>Cancel</button>
+                <button type="button" className="btn btn-ghost2" onClick={() => setEditing(false)}>Cancel</button>
                 <button type="submit" className="btn btn-primary" disabled={saving}>
                   {saving ? 'Saving...' : 'Save Changes'}
                 </button>
@@ -106,7 +106,7 @@ export default function ProfilePage() {
 
         {/* Profile card */}
         <div className="card" style={{ marginBottom: 24 }}>
-          <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
+          <div className="profile-header" style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
             <Avatar user={user} size={80} />
             <div style={{ flex: 1 }}>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 800, color: 'var(--text-mid)' }}>{user?.name}</div>

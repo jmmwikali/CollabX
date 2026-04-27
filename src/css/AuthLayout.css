@@ -455,14 +455,68 @@
 
 /* ══ RESPONSIVE ══ */
 @media (max-width: 680px) {
-  .auth-container { flex-direction: column; min-height: auto; max-width: 420px; }
-  .panel { position: relative; width: 100%; min-height: 300px; }
-  .panel-dark { left: 0 !important; }
-  .panel-bright { right: 0 !important; }
-  .overlay { display: none; }
-  .auth-container.active .panel-bright { display: none; }
-  .auth-container:not(.active) .form-content-register { display: none; }
-  .auth-container.active .form-content-login { display: none; }
-  .auth-container.active .form-content-register { opacity: 1; transform: none; pointer-events: auto; }
-  .auth-container.active .welcome-register { opacity: 1; transform: none; pointer-events: auto; }
+  .auth-page {
+    padding: 16px;
+    align-items: flex-start;
+    padding-top: 40px;
+  }
+
+  .auth-container {
+    flex-direction: column;
+    min-height: auto;
+    max-width: 100%;
+    border-radius: 18px;
+  }
+
+  /* Hide the welcome/bright panel entirely on mobile */
+  .panel-bright { display: none !important; }
+  .overlay { display: none !important; }
+
+  /* Dark form panel takes full width */
+  .panel-dark {
+    position: relative !important;
+    width: 100% !important;
+    left: 0 !important;
+    min-height: auto;
+  }
+
+  /* Both form contents visible by default, toggled by active class */
+  .form-content-login,
+  .form-content-register {
+    position: relative !important;
+    inset: auto !important;
+  }
+
+  .form-content-login {
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+  }
+
+  .auth-container.active .form-content-login {
+    display: none !important;
+  }
+
+  .form-content-register {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    display: none !important;
+  }
+
+  .auth-container.active .form-content-register {
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+    display: flex !important;
+  }
+
+  .panel-inner {
+    padding: 32px 24px;
+  }
+
+  .field-row {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-heading { font-size: 22px; }
 }

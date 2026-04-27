@@ -135,6 +135,38 @@ export function Sidebar({ pendingInvites = 0, unreadDms = 0 }) {
   );
 }
 
+export function BottomNav({ pendingInvites = 0, unreadDms = 0 }) {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const items = [
+    { to: '/dashboard', icon: '/images/home.png', label: 'Home' },
+    { to: '/explore',   icon: '/images/people.png', label: 'Explore' },
+    { to: '/teams',     icon: '/images/team.png',   label: 'Teams',    badge: pendingInvites },
+    { to: '/messages',  icon: '/images/messages.png', label: 'Messages', badge: unreadDms },
+    { to: '/social',    icon: '/images/social.png', label: 'Social' },
+    { to: '/profile',   icon: '/images/user.png',   label: 'Profile' },
+  ];
+
+  return (
+    <nav className="bottom-nav" style={{ display: 'none' }}>
+      {items.map(item => (
+        <NavLink
+          key={item.to}
+          to={item.to}
+          className={({ isActive }) => `bottom-nav-item${isActive ? ' active' : ''}`}
+        >
+          {item.badge > 0 && (
+            <span className="bottom-nav-badge">{item.badge}</span>
+          )}
+          <img src={item.icon} alt={item.label} />
+          <span>{item.label}</span>
+        </NavLink>
+      ))}
+    </nav>
+  );
+}
+
 export function AppShell({ children, title, actions, pendingInvites = 0, unreadDms = 0 }) {
   return (
     <div className="app-shell">
@@ -146,6 +178,7 @@ export function AppShell({ children, title, actions, pendingInvites = 0, unreadD
         </header>
         <main className="page-body">{children}</main>
       </div>
+      <BottomNav pendingInvites={pendingInvites} unreadDms={unreadDms} />
     </div>
   );
 }

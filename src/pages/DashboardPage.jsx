@@ -51,7 +51,7 @@ export default function DashboardPage() {
       }
     >
       {/* Welcome banner */}
-      <div style={{
+      <div className="dashboard-welcome" style={{
         background: 'linear-gradient(135deg, #1e3a5f, #2d5a8e)',
         border: '1px solid #2d5a8e',
         borderRadius: 'var(--radius-xl)',
@@ -74,14 +74,14 @@ export default function DashboardPage() {
             </span>
           </div>
         </div>
-        <div style={{ display: 'flex', gap: 24, textAlign: 'center', }}>
+        <div className="dashboard-stats" style={{ display: 'flex', gap: 24, textAlign: 'center', }}>
           {[
             { label: 'Teams', value: stats.team_count || 0 },
             { label: 'Messages', value: stats.messages_sent || 0 },
             { label: 'Rep Points', value: (user?.reputation_points || 0).toLocaleString() },
           ].map(s => (
             <div key={s.label}>
-              <div style={{ fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 900, }}>{s.value}</div>
+              <div className="stat-value" style={{ fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 900, }}>{s.value}</div>
               <div style={{ fontSize: 11, color: 'var(--text-primary)', marginTop: 2, fontWeight: 700 }}>{s.label}</div>
             </div>
           ))}
@@ -142,7 +142,7 @@ export default function DashboardPage() {
             </div>
           </div> <br />
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 24, alignItems: 'start' }}>
+      <div className="dashboard-cols" style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 24, alignItems: 'start' }}>
 
         
         {/* Left column */}
