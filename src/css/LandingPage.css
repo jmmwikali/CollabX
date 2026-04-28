@@ -494,7 +494,7 @@
   }
 
   /* Nav bar — compress to fit logo + buttons on one row */
-  nav {
+  .body nav {
     padding: 10px 14px !important;
     top: 6px !important;
     left: 8px !important;

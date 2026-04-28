@@ -149,7 +149,7 @@ export function BottomNav({ pendingInvites = 0, unreadDms = 0 }) {
   ];
 
   return (
-    <nav className="bottom-nav" style={{ display: 'none' }}>
+    <nav className="bottom-nav">
       {items.map(item => (
         <NavLink
           key={item.to}

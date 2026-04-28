@@ -384,6 +384,10 @@ body {
   letter-spacing: 0.02em;
 }
 
+.bottom-nav {
+  display: none;
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    TOPBAR — deepest slate so hierarchy reads clearly
    ═══════════════════════════════════════════════════════════════════ */
@@ -925,7 +929,9 @@ body {
   .bottom-nav {
     display: flex !important;
     position: fixed;
-    bottom: 0; left: 0; right: 0;
+    bottom: 0;        /* ← this is what was missing */
+    left: 0;
+    right: 0;
     height: 64px;
     background: var(--bg-mid);
     border-top: 1px solid var(--border);
