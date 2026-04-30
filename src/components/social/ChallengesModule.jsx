@@ -3,7 +3,7 @@ import { Avatar, TalentBadge, formatTime, Modal } from '../Layout';
 import { socialAPI } from '../../services/socialAPI';
 
 /* ─── Submissions panel ─── */
-function SubmissionsPanel({ postId, postUserId, currentUserId, iSubmitted, onSubmitted }) {
+function SubmissionsPanel({ postId, postUserId, currentUserId, iSubmitted, isExpired, onSubmitted }) {
   const [open, setOpen] = useState(false);
   const [subs, setSubs] = useState([]);
   const [loaded, setLoaded] = useState(false);
@@ -61,7 +61,7 @@ function SubmissionsPanel({ postId, postUserId, currentUserId, iSubmitted, onSub
         <button className="btn btn-ghost2 btn-sm" onClick={load} style={{ fontSize: 12, gap: 6 }}>
           🏆 {open ? 'Hide' : 'View'} Leaderboard ({loaded ? subs.length : '…'} entries)
         </button>
-        {!iSubmitted && currentUserId !== postUserId && (
+        {!isExpired && !iSubmitted && currentUserId !== postUserId && (
           <button className="btn btn-primary btn-sm" style={{ marginLeft: 'auto', fontSize: 12 }}
             onClick={() => { setOpen(true); setLoaded(true); }}>
             + Submit Entry
@@ -76,7 +76,7 @@ function SubmissionsPanel({ postId, postUserId, currentUserId, iSubmitted, onSub
 
       {open && (
         <div style={{ marginTop: 12 }}>
-          {!iSubmitted && currentUserId !== postUserId && (
+          {!isExpired && !iSubmitted && currentUserId !== postUserId && (
             <div style={{
               marginBottom: 16, padding: '12px 14px',
               background: 'rgba(255,255,255,0.03)',
@@ -287,6 +287,7 @@ function ChallengeCard({ post, currentUserId, onLikeToggle, onSubmitted, onDelet
           postUserId={post.user_id}
           currentUserId={currentUserId}
           iSubmitted={post.i_submitted}
+          isExpired={isExpired}
           onSubmitted={() => onSubmitted(post.id)}
         />
       </div>
