@@ -108,7 +108,8 @@
   --shadow-blue: 0 6px 20px rgba(59, 130, 246, 0.20);
 
   /* ── LAYOUT ────────────────────────────────────────────────── */
-  --sidebar-w: 240px;
+  --sidebar-w:           280px;
+  --sidebar-w-collapsed: 64px;
   --topbar-h:  64px;
 
   /* ── TRANSITIONS ───────────────────────────────────────────── */
@@ -184,6 +185,7 @@ body {
   display: flex;
   flex-direction: column;
   background: var(--bg);
+  transition: margin-left var(--transition-slow);
 }
 
 .page-body {
@@ -207,6 +209,7 @@ body {
   flex-direction: column;
   z-index: 100;
   overflow: hidden;
+  transition: width var(--transition-slow);
 }
 
 .sidebar::after {
@@ -372,6 +375,103 @@ body {
   color: var(--slate-400);
   text-transform: capitalize;
   letter-spacing: 0.02em;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   SIDEBAR COLLAPSE
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Collapsed sidebar — icon-only rail */
+.sidebar--collapsed {
+  width: var(--sidebar-w-collapsed);
+}
+
+/* Main content shifts left when sidebar collapses */
+.sidebar-is-collapsed .main-content {
+  margin-left: var(--sidebar-w-collapsed);
+}
+
+/* Logo row — flex container for logo + toggle button */
+.sidebar-logo-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 8px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+/* Remove the logo's own bottom border — now on the row */
+.sidebar-logo-row .sidebar-logo {
+  border-bottom: none;
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar--collapsed .sidebar-logo-row {
+  padding-top: 12px;
+  justify-content: center;
+}
+
+/* Collapsed logo — centered, no text */
+.sidebar-logo--icon-only {
+  justify-content: center;
+  padding: 22px 0;
+  flex: 1;
+}
+
+/* Collapse toggle button */
+.sidebar-collapse-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--slate-400);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 5px 7px;
+  border-radius: var(--radius);
+  line-height: 1;
+  transition: color var(--transition-fast), background var(--transition-fast);
+  letter-spacing: -1px;
+}
+
+.sidebar-collapse-btn:hover {
+  color: var(--blue-sky);
+  background: rgba(74, 144, 232, 0.10);
+}
+
+/* Icon-only nav items — center the icon */
+.nav-item--icon-only {
+  justify-content: center;
+  padding: 9px 0;
+  transform: none !important; /* disable the translateX hover nudge */
+}
+
+.nav-item--icon-only .nav-icon {
+  width: 20px;
+  margin: 0;
+}
+
+/* Dot badge for collapsed mode (replaces the number badge) */
+.nav-badge--dot {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  width: 7px;
+  height: 7px;
+  min-width: unset;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--coral);
+  border: 1.5px solid var(--bg-mid);
+}
+
+/* Collapsed user footer — just the avatar centered */
+.sidebar-user--collapsed {
+  justify-content: center;
+  padding: 14px 0;
 }
 
 .bottom-nav {
@@ -632,11 +732,11 @@ body {
 .talent-badge:hover { opacity: 0.85; transform: scale(0.97); }
 
 /* Tech roles — Blue family */
-.talent-frontend    { background: rgba(74, 144, 232, 0.14); color: #1d4ed8; border: 1px solid rgba(74, 144, 232, 0.30); }
-.talent-backend     { background: rgba(45, 106, 199, 0.14); color: #1e40af; border: 1px solid rgba(45, 106, 199, 0.30); }
-.talent-fullstack   { background: rgba(99, 160, 255, 0.14); color: #2563eb; border: 1px solid rgba(99, 160, 255, 0.28); }
-.talent-mobile      { background: rgba(56, 130, 220, 0.14); color: #1d4ed8; border: 1px solid rgba(56, 130, 220, 0.28); }
-.talent-devops      { background: rgba(30, 90, 170, 0.14);  color: #1e40af; border: 1px solid rgba(30, 90, 170, 0.28); }
+.talent-frontend    { background: rgba(74, 144, 232, 0.14); color: #4672ec; border: 1px solid rgba(74, 144, 232, 0.30); }
+.talent-backend     { background: rgba(45, 106, 199, 0.14); color: #4672ec; border: 1px solid rgba(45, 106, 199, 0.30); }
+.talent-fullstack   { background: rgba(99, 160, 255, 0.14); color: #4672ec; border: 1px solid rgba(99, 160, 255, 0.28); }
+.talent-mobile      { background: rgba(56, 130, 220, 0.14); color: #4672ec; border: 1px solid rgba(56, 130, 220, 0.28); }
+.talent-devops      { background: rgba(30, 90, 170, 0.14);  color: #4672ec; border: 1px solid rgba(30, 90, 170, 0.28); }
 
 /* Design / Creative roles — Purple family */
 .talent-designer    { background: rgba(139, 92, 246, 0.12); color: #6d28d9; border: 1px solid rgba(139, 92, 246, 0.28); }
@@ -904,6 +1004,11 @@ body {
   .main-content {
     margin-left: 0;
     padding-bottom: 70px;
+  }
+
+  /* Override collapsed sidebar margin — sidebar is hidden on mobile */
+  .sidebar-is-collapsed .main-content {
+    margin-left: 0;
   }
 
   .page-body {

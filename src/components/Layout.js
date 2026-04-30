@@ -1,4 +1,4 @@
-// import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -86,7 +86,7 @@ export function RepBadge({ points }) {
   return <span className="rep-badge">⭐ {points?.toLocaleString() || 0}</span>;
 }
 
-export function Sidebar({ pendingInvites = 0, unreadDms = 0 }) {
+export function Sidebar({ pendingInvites = 0, unreadDms = 0, collapsed = false, onCollapsedChange }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -95,53 +95,87 @@ export function Sidebar({ pendingInvites = 0, unreadDms = 0 }) {
     navigate('/');
   };
 
+  const toggleCollapsed = () => {
+    onCollapsedChange?.(!collapsed);
+  };
+
+  // Reusable nav item that adapts to collapsed state
+  const NavItem = ({ to, iconSrc, iconAlt, label, badge }) => (
+    <NavLink
+      to={to}
+      className={({ isActive }) => `nav-item${isActive ? ' active' : ''}${collapsed ? ' nav-item--icon-only' : ''}`}
+      title={collapsed ? label : undefined}
+    >
+      <span className="nav-icon">
+        <img src={iconSrc} alt={iconAlt} width="19px" height="19px" />
+      </span>
+      {!collapsed && label}
+      {badge > 0 && (
+        collapsed
+          ? <span className="nav-badge nav-badge--dot" />
+          : <span className="nav-badge">{badge}</span>
+      )}
+    </NavLink>
+  );
+
   return (
-    <aside className="sidebar">
-      <NavLink to="/dashboard" className="sidebar-logo">
-        <img src="/images/CollabX(white).png" alt="logo" width={"30px"} height={"30px"} />
-        Collab<span className="logo-x">X</span>
-      </NavLink>
+    <aside className={`sidebar${collapsed ? ' sidebar--collapsed' : ''}`}>
+
+      {/* Logo row with collapse toggle */}
+      <div className="sidebar-logo-row">
+        <NavLink
+          to="/dashboard"
+          className={`sidebar-logo${collapsed ? ' sidebar-logo--icon-only' : ''}`}
+          title={collapsed ? 'CollabX' : undefined}
+        >
+          {!collapsed && <img src="/images/CollabX(white).png" alt="logo" width="25px" height="25px" />}
+          {!collapsed && <>Collab<span className="logo-x">X</span></>}
+        </NavLink>
+
+        <button
+          className="sidebar-collapse-btn"
+          onClick={toggleCollapsed}
+          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          <img src="/images/collapse.png" width="25px" height="25px" style={{ opacity: 0.6, transition: 'transform var(--transition-slow)', transform: collapsed ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+        </button>
+      </div>
 
       <nav className="sidebar-nav">
-        <span className="nav-section-label">Main</span>
-        <NavLink to="/dashboard" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-          <span className="nav-icon"><img src="/images/home.png" alt="home" width={"19px"} height={"19px"} /></span> Dashboard
-        </NavLink>
-        <NavLink to="/explore" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-          <span className="nav-icon"><img src="/images/people.png" alt="people" width={"19px"} height={"19px"} /></span> Explore Talent
-        </NavLink>
+        {!collapsed && <span className="nav-section-label">Main</span>}
+        <NavItem to="/dashboard" iconSrc="/images/home.png"    iconAlt="home"   label="Dashboard"     />
+        <NavItem to="/explore"   iconSrc="/images/people.png"  iconAlt="people" label="Explore Talent" />
 
-        <span className="nav-section-label">Workspace</span>
-        <NavLink to="/teams" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-          <span className="nav-icon"><img src="/images/team.png" alt="teams" width={"19px"} height={"19px"} /></span> My Teams
-          {pendingInvites > 0 && <span className="nav-badge">{pendingInvites}</span>}
-        </NavLink>
-        <NavLink to="/messages" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-          <span className="nav-icon"><img src="/images/messages.png" alt="messages" width={"19px"} height={"19px"} /></span> Messages
-          {unreadDms > 0 && <span className="nav-badge">{unreadDms}</span>}
-        </NavLink>
+        {!collapsed && <span className="nav-section-label">Workspace</span>}
+        <NavItem to="/teams"    iconSrc="/images/team.png"     iconAlt="teams"    label="My Teams"   badge={pendingInvites} />
+        <NavItem to="/messages" iconSrc="/images/messages.png" iconAlt="messages" label="Messages"   badge={unreadDms} />
+        <NavItem to="/social"   iconSrc="/images/social.png"   iconAlt="social"   label="Social Hub" />
 
-        {/* ── NEW: Social Hub nav item ── */}
-        <NavLink to="/social" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-          <span className="nav-icon"><img src="/images/social.png" alt="profile" width={"19px"} height={"19px"} /></span> Social Hub
-        </NavLink>
+        {!collapsed && <span className="nav-section-label">Account</span>}
+        <NavItem to="/profile" iconSrc="/images/user.png" iconAlt="profile" label="Profile" />
 
-        <span className="nav-section-label">Account</span>
-        <NavLink to="/profile" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-          <span className="nav-icon"><img src="/images/user.png" alt="profile" width={"19px"} height={"19px"} /></span> Profile
-        </NavLink>
-        <button className="nav-item" onClick={handleLogout}>
-          <span className="nav-icon"><img src="/images/logout.png" alt="logout" width={"19px"} height={"19px"} /></span> Log Out
+        <button
+          className={`nav-item${collapsed ? ' nav-item--icon-only' : ''}`}
+          onClick={handleLogout}
+          title={collapsed ? 'Log Out' : undefined}
+        >
+          <span className="nav-icon">
+            <img src="/images/logout.png" alt="logout" width="19px" height="19px" />
+          </span>
+          {!collapsed && 'Log Out'}
         </button>
       </nav>
 
       {user && (
-        <div className="sidebar-user">
+        <div className={`sidebar-user${collapsed ? ' sidebar-user--collapsed' : ''}`}>
           <Avatar user={user} size={34} />
-          <div className="sidebar-user-info">
-            <div className="sidebar-user-name">{user.name}</div>
-            <div className="sidebar-user-role">{talentLabel[user.primary_talent] || 'Member'}</div>
-          </div>
+          {!collapsed && (
+            <div className="sidebar-user-info">
+              <div className="sidebar-user-name">{user.name}</div>
+              <div className="sidebar-user-role">{talentLabel[user.primary_talent] || 'Member'}</div>
+            </div>
+          )}
         </div>
       )}
     </aside>
@@ -181,9 +215,23 @@ export function BottomNav({ pendingInvites = 0, unreadDms = 0 }) {
 }
 
 export function AppShell({ children, title, actions, pendingInvites = 0, unreadDms = 0 }) {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(
+    () => localStorage.getItem('sidebarCollapsed') === 'true'
+  );
+
+  const handleCollapsedChange = (val) => {
+    setSidebarCollapsed(val);
+    localStorage.setItem('sidebarCollapsed', val);
+  };
+
   return (
-    <div className="app-shell">
-      <Sidebar pendingInvites={pendingInvites} unreadDms={unreadDms} />
+    <div className={`app-shell${sidebarCollapsed ? ' sidebar-is-collapsed' : ''}`}>
+      <Sidebar
+        pendingInvites={pendingInvites}
+        unreadDms={unreadDms}
+        collapsed={sidebarCollapsed}
+        onCollapsedChange={handleCollapsedChange}
+      />
       <div className="main-content">
         <header className="topbar">
           <h1 className="topbar-title">{title}</h1>
