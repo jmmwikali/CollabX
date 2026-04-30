@@ -452,10 +452,7 @@
 
 /* ── Scroll reveal ────────────────────────────────────────── */
 .reveal {
-  opacity: 0;
-  transform: translateY(28px);
   transition: opacity 0.9s var(--ease-soft), transform 0.9s var(--ease-soft);
-  will-change: opacity, transform;
 }
 .reveal.is-visible { opacity: 1; transform: translateY(0); }
 
@@ -802,15 +799,7 @@
   line-height: 1.65;
   color: var(--ink-2);
 }
-.feature-arrow {
-  position: absolute;
-  top: 30px; right: 28px;
-  font-size: 20px;
-  color: #116bfc;
-  opacity: 0;
-  transform: translateX(-6px);
-  transition: opacity 0.4s var(--ease-soft), transform 0.4s var(--ease-soft);
-}
+
 .feature-card:hover .feature-arrow { opacity: 1; transform: translateX(0); }
 
 /* ── CTA SECTION ──────────────────────────────────────────── */

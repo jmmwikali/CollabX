@@ -8,120 +8,110 @@
 
 :root {
 
-  /* ── BACKGROUNDS ──────────────────────────────────────────────
-     Dark slate/navy gradient page. Even darker sidebar/topbar.
-     Light blue-tinted cards for surface depth.               */
-  --bg:           linear-gradient(135deg, #0f1c2e 0%, #0a1628 60%, #0d1f38 100%);
-  --bg-mid:       #080f1a;
-  --bg-cards:     rgba(255, 255, 255, 0.96);
-  --bg-card:      linear-gradient(145deg, #f0f6ff 0%, #e8f2ff 100%);
-  --bg-elevated:  linear-gradient(145deg, #e8f2ff 0%, #ddeeff 100%);
-  --bg-hover:     #d6eaff;
-  --bg-glass:     rgba(99, 160, 255, 0.13);
-  --bg-ghover:    rgba(99, 160, 255, 0.20);
+  /* ── BACKGROUNDS ───────────────────────────────────────────── */
+  --bg:           linear-gradient(135deg, #070B14 0%, #0A1020 60%, #050914 100%);
+  --bg-mid:       #060A12;
+  --bg-cards:     rgba(10, 18, 32, 0.72);
+  --bg-card:      linear-gradient(145deg, rgba(16, 26, 46, 0.75) 0%, rgba(12, 20, 38, 0.65) 100%);
+  --bg-elevated:  linear-gradient(145deg, rgba(18, 30, 54, 0.8) 0%, rgba(10, 16, 32, 0.7) 100%);
+  --bg-hover:     rgba(30, 58, 95, 0.35);
+  --bg-glass:     rgba(255, 255, 255, 0.04);
+  --bg-ghover:    rgba(255, 255, 255, 0.06);
 
-  /* ── BORDERS ──────────────────────────────────────────────────
-     Subtle blue-tinted borders that feel structural, not noisy. */
-  --border:       rgba(99, 160, 255, 0.12);
-  --border-hover: rgba(99, 160, 255, 0.28);
+  /* ── BORDERS ───────────────────────────────────────────────── */
+  --border:       rgba(148, 163, 184, 0.12);
+  --border-hover: rgba(148, 163, 184, 0.22);
 
-  /* ── BLUE — PRIMARY IDENTITY (60–70%) ────────────────────────
-     Vibrant medium blue → deep blue for hover/pressed.
-     Soft sky blue for subtle highlights and badges.           */
-  --blue:         #4A90E8;          /* Primary blue — buttons, active states, links        */
-  --blue-deep:    #2D6AC7;          /* Deep blue — hover/pressed, gradients endpoint       */
-  --blue-sky:     #93C5FD;          /* Soft sky blue — highlights, subtle badges           */
-  --blue-pale:    #DBEAFE;          /* Pale blue — tinted card surfaces                    */
-  --blue-glow:    rgba(74, 144, 232, 0.18); /* Blue glow — focus rings, active halos       */
-  --blue-dim:     rgba(74, 144, 232, 0.10); /* Blue dim — very subtle tints                */
+  /* ── 4-CORE COLOR PALETTE (CLEANED SYSTEM) ─────────────────── */
 
-  /* ── PURPLE — SECONDARY ACCENT ───────────────────────────────
-     Creative, premium, social-energy. Use sparingly (badges,
-     featured items, onboarding highlights).                   */
-  --purple:       #8B5CF6;          /* Main purple — featured, premium, creativity         */
-  --purple-deep:  #6D28D9;          /* Deep purple — hover state                           */
-  --purple-soft:  #A78BFA;          /* Soft purple — badges, subtle highlights             */
-  --purple-pale:  #EDE9FE;          /* Pale purple — badge backgrounds on light surfaces   */
-  --purple-glow:  rgba(139, 92, 246, 0.15); /* Purple glow                                */
-  --purple-dim:   rgba(139, 92, 246, 0.10); /* Very subtle purple tint                     */
+  /* BLUE — PRIMARY */
+  --blue:         #3B82F6;
+  --blue-deep:    #1D4ED8;
+  --blue-sky:     #60A5FA;
+  --blue-pale:    rgba(59, 130, 246, 0.12);
+  --blue-glow:    rgba(59, 130, 246, 0.18);
+  --blue-dim:     rgba(59, 130, 246, 0.08);
 
-  /* ── CORAL — WARM ACCENT ─────────────────────────────────────
-     Human warmth, energy, urgency. CTAs, invites, notifications,
-     trending. Grabs attention immediately.                    */
-  --coral:        #F26B5B;          /* Main coral — invite buttons, CTA, trending          */
-  --coral-deep:   #D94F3D;          /* Deep coral — hover state                            */
-  --coral-soft:   #F8957E;          /* Soft coral — reaction counters, notification dots   */
-  --coral-pale:   #FEE2DD;          /* Pale coral — badge backgrounds on light surfaces    */
-  --coral-glow:   rgba(242, 107, 91, 0.15); /* Coral glow                                 */
-  --coral-dim:    rgba(242, 107, 91, 0.10); /* Very subtle coral tint                      */
+  /* PURPLE — SECONDARY */
+  --purple:       #7C3AED;
+  --purple-deep:  #5B21B6;
+  --purple-soft:  #A78BFA;
+  --purple-pale:  rgba(124, 58, 237, 0.12);
+  --purple-glow:  rgba(124, 58, 237, 0.16);
+  --purple-dim:   rgba(124, 58, 237, 0.08);
 
-  /* ── SLATE — NEUTRAL FOUNDATION ──────────────────────────────
-     Keeps everything clean, readable, structural.
-     Dark backgrounds, borders, muted text, panels.           */
-  --slate-900:    #0a0f1a;          /* Deepest dark — topbar, overlays                     */
-  --slate-800:    #0f172a;          /* Dark — sidebar section                              */
-  --slate-700:    #1e293b;          /* Mid dark — secondary panels, hover states           */
-  --slate-600:    #334155;          /* Slate borders on dark surfaces                      */
-  --slate-500:    #475569;          /* Muted text on dark, placeholder text                */
-  --slate-400:    #64748b;          /* Secondary text on dark backgrounds                  */
-  --slate-300:    #94a3b8;          /* Tertiary text, inactive nav items                   */
-  --slate-200:    #cbd5e1;          /* Light borders, dividers on light surfaces            */
-  --slate-100:    #e2e8f0;          /* Subtle backgrounds on light surfaces                */
+  /* CYAN — INFO / TECH */
+  --info:         #06B6D4;
+  --info-dim:     rgba(6, 182, 212, 0.12);
 
-  /* ── LEGACY ALIASES (keep so existing components don't break) ─
-     These map old variable names to new values.              */
+  /* CORAL — ALERT / ENERGY */
+  --coral:        #FB7185;
+  --coral-deep:   #E11D48;
+  --coral-soft:   #FDA4AF;
+  --coral-pale:   rgba(251, 113, 133, 0.12);
+  --coral-glow:   rgba(251, 113, 133, 0.14);
+  --coral-dim:    rgba(251, 113, 133, 0.08);
+
+  /* ── SLATE — DARK FOUNDATION (DEEPENED) ───────────────────── */
+  --slate-900:    #050914;
+  --slate-800:    #0A1020;
+  --slate-700:    #111A2E;
+  --slate-600:    #1C2A44;
+  --slate-500:    #334155;
+  --slate-400:    #64748B;
+  --slate-300:    #94A3B8;
+  --slate-200:    #CBD5E1;
+  --slate-100:    #E2E8F0;
+
+  /* ── LEGACY ALIASES ───────────────────────────────────────── */
   --accent:        var(--blue);
   --accent-bright: var(--blue-sky);
   --accent-glow:   var(--blue-glow);
-  --accent2:       var(--blue-deep);
-  --accent3:       #1a56b0;
+  --accent2:       var(--purple);
+  --accent3:       var(--blue-deep);
 
-  /* ── SEMANTIC COLORS ─────────────────────────────────────────
-     Standard meanings — do NOT use blue for warning.         */
-  --success:      #10B981;          /* Emerald green — positive actions, confirmations     */
-  --success-dim:  rgba(16, 185, 129, 0.12);
-  --warning:      #F59E0B;          /* Amber — caution, pending, rep points display        */
-  --warning-dim:  rgba(245, 158, 11, 0.12);
-  --danger:       #EF4444;          /* Red — errors, destructive actions, nav badges       */
-  --danger-dim:   rgba(239, 68, 68, 0.12);
-  --info:         #06B6D4;          /* Cyan — informational, info chips                    */
-  --info-dim:     rgba(6, 182, 212, 0.12);
+  /* ── SEMANTIC COLORS ───────────────────────────────────────── */
+  --success:      #10B981;
+  --success-dim:  rgba(16, 185, 129, 0.10);
 
-  /* ── TEXT HIERARCHY ──────────────────────────────────────────
-     On dark (page/sidebar): light values.
-     On light (cards/modals): dark values.                    */
+  --warning:      #F59E0B;
+  --warning-dim:  rgba(245, 158, 11, 0.10);
 
-  /* — ON DARK BACKGROUNDS — */
-  --text-primary:    #f0f6ff;       /* Main text on dark — soft white with blue tint       */
-  --text-tertiary:   #94a3b8;       /* Inactive nav, subtle labels on dark                 */
+  --danger:       #EF4444;
+  --danger-dim:   rgba(239, 68, 68, 0.10);
 
-  /* — ON LIGHT CARD/MODAL SURFACES — */
-  --text-mid:        #0f172a;       /* Card titles, modal titles — near-black navy          */
-  --text-secondary:  #334155;       /* Card body text, form labels, author names            */
-  --text-muted:      #64748b;       /* Timestamps, placeholders, meta info                 */
-  --text-dark:       #020c18;       /* Hover state text on lightest surfaces               */
+  --info:         #06B6D4;
+  --info-dim:     rgba(6, 182, 212, 0.10);
 
-  /* ── FONTS (unchanged) ───────────────────────────────────────*/
+  /* ── TEXT ─────────────────────────────────────────────────── */
+  --text-primary:    #E6EDF7;
+  --text-tertiary:   #64748B;
+
+  --text-mid:        #E2E8F0;
+  --text-secondary:  #CBD5E1;
+  --text-muted:      #94A3B8;
+  --text-dark:       #0B1220;
+
+  /* ── FONTS ─────────────────────────────────────────────────── */
   --font-display: 'Syne', sans-serif;
   --font-body:    'DM Sans', sans-serif;
 
-  /* ── RADIUS (unchanged) ─────────────────────────────────────*/
+  /* ── RADIUS ────────────────────────────────────────────────── */
   --radius:    10px;
   --radius-lg: 14px;
   --radius-xl: 20px;
 
-  /* ── SHADOWS ─────────────────────────────────────────────────
-     Deeper on dark backgrounds to create real lift.         */
-  --shadow:      0 2px 16px rgba(0, 0, 0, 0.50), 0 1px 4px rgba(0, 0, 0, 0.35);
-  --shadow-glow: 0 0 24px rgba(74, 144, 232, 0.12);
-  --shadow-lift: 0 8px 32px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.35);
-  --shadow-blue: 0 4px 16px rgba(74, 144, 232, 0.25);
+  /* ── SHADOWS (GLASS-FOCUSED) ───────────────────────────────── */
+  --shadow:      0 8px 24px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 0 28px rgba(59, 130, 246, 0.10);
+  --shadow-lift: 0 14px 40px rgba(0, 0, 0, 0.65);
+  --shadow-blue: 0 6px 20px rgba(59, 130, 246, 0.20);
 
-  /* ── LAYOUT (unchanged) ─────────────────────────────────────*/
+  /* ── LAYOUT ────────────────────────────────────────────────── */
   --sidebar-w: 240px;
   --topbar-h:  64px;
 
-  /* ── TRANSITIONS (unchanged) ────────────────────────────────*/
+  /* ── TRANSITIONS ───────────────────────────────────────────── */
   --transition-fast: 0.12s ease;
   --transition-base: 0.2s ease;
   --transition-slow: 0.35s ease;
@@ -527,11 +517,11 @@ body {
 
 /* Ghost2 — on light card surfaces */
 .btn-ghost2 {
-  background: transparent;
+  background: var(--bg-glass);
   color: var(--text-secondary);
 }
 .btn-ghost2:hover:not(:disabled) {
-  background: var(--bg-glass);
+  background: var(--bg-hover);
   color: var(--text-mid);
 }
 
@@ -588,7 +578,7 @@ body {
 }
 
 .form-input, .form-select, .form-textarea {
-  background: rgba(255, 255, 255, 0.70);
+  background: var(--bg-glass);
   border: 1px solid rgba(74, 144, 232, 0.28);
   border-radius: var(--radius);
   color: var(--text-secondary);
@@ -614,6 +604,11 @@ body {
 .form-input::placeholder { color: var(--slate-500); opacity: 1; }
 .form-select option { background: #1e293b; color: var(--text-secondary); border-radius: var(--radius); }
 .form-textarea { resize: vertical; min-height: 100px; line-height: 1.7; }
+
+.date::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
 
 /* ═══════════════════════════════════════════════════════════════════
    TALENT BADGES
@@ -726,7 +721,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 22px;
+  margin-bottom: 10px;
 }
 
 .section-title {

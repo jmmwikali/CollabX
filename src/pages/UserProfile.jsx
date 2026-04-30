@@ -21,7 +21,7 @@ export default function UserProfile() {
     })();
 
     const secondarySkills = (() => {
-    const raw = u?.secondary_talents;
+    const raw = u?.secondary_skills;
     if (Array.isArray(raw)) return raw;
     if (typeof raw === 'string') {
         try { return JSON.parse(raw); } catch { return []; }
@@ -44,7 +44,7 @@ export default function UserProfile() {
             </div>
             {u.bio && (
                 <p style={{
-                fontSize: 13, color: 'var(--text-dark)', lineHeight: 1.5,
+                fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5,
                 overflow: 'hidden', display: '-webkit-box',
                 WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
                 }}>{u.bio}</p>
@@ -57,7 +57,7 @@ export default function UserProfile() {
             </div>
             </div>
 
-          {/* Secondary skills - was u.map(), should be secondarySkills.map() */}
+          {/* Secondary skills */}
             {secondarySkills.length > 0 && (
             <div style={{ marginTop: 16 }}>
                 <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 8, fontWeight: 700 }}>SKILLS</div>
@@ -80,7 +80,7 @@ export default function UserProfile() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {portfolioLinks.map((link, i) => (
                     <a key={i} href={link} target="_blank" rel="noopener noreferrer" style={{
-                    fontSize: 13, color: 'var(--text-dark)', textDecoration: 'none',
+                    fontSize: 13, color: 'var(--text-tertiary)', textDecoration: 'none',
                     display: 'flex', alignItems: 'center', gap: 6,
                     }}>
                     🔗 {link}
@@ -100,7 +100,7 @@ export default function UserProfile() {
           ].map(s => (
             <div key={s.label} className="card card-sm" style={{ textAlign: 'center' }}>
               <img src={s.icon} alt={s.label} style={{ width: 50, height: 50 }} />
-              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 15, color: 'var(--text-dark)'}}>{s.value}</div>
+              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 15, color: 'var(--text-primary)'}}>{s.value}</div>
               <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{s.label}</div>
             </div>
           ))}

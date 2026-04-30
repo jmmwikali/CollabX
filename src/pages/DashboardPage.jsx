@@ -28,6 +28,27 @@ export default function DashboardPage() {
     } catch (err) { console.error(err); }
   };
 
+  const stats = data?.stats || {};
+
+  // Add these two handlers inside the component, after handleInviteResponse:
+
+  const handleClearNotification = async (id) => {
+    try {
+      await dashboardAPI.deleteNotification(id);
+      setData(prev => ({
+        ...prev,
+        notifications: prev.notifications.filter(n => n.id !== id),
+      }));
+    } catch (err) { console.error(err); }
+  };
+
+  const handleClearAllNotifications = async () => {
+    try {
+      await dashboardAPI.clearAllNotifications();
+      setData(prev => ({ ...prev, notifications: [] }));
+    } catch (err) { console.error(err); }
+  };
+
   const pendingInvites = invitations.length;
   const unreadDms = data?.unread_dms || 0;
 
@@ -37,7 +58,7 @@ export default function DashboardPage() {
     </AppShell>
   );
 
-  const stats = data?.stats || {};
+  
 
   return (
     <AppShell
@@ -54,7 +75,7 @@ export default function DashboardPage() {
       <div className="dashboard-welcome" style={{
         background: 'linear-gradient(135deg, #1e3a5f, #2d5a8e)',
         border: '1px solid #2d5a8e',
-        borderRadius: 'var(--radius-xl)',
+        borderRadius: 'var(--radius)',
         padding: '28px 32px',
         marginBottom: 28,
         display: 'flex',
@@ -80,7 +101,7 @@ export default function DashboardPage() {
             { label: 'Messages', value: stats.messages_sent || 0 },
             { label: 'Rep Points', value: (user?.reputation_points || 0).toLocaleString() },
           ].map(s => (
-            <div key={s.label}>
+            <div key={s.label} style={{borderLeft: "1.5px solid var(--accent-glow)", paddingLeft: 25}}>
               <div className="stat-value" style={{ fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 900, }}>{s.value}</div>
               <div style={{ fontSize: 11, color: 'var(--text-primary)', marginTop: 2, fontWeight: 700 }}>{s.label}</div>
             </div>
@@ -88,50 +109,80 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Pending invitations */}
-      {invitations.length > 0 && (
-        <div style={{ marginBottom: 28 }}>
-          <div className="section-header">
-            <h3 className="section-title"><span><img src="/images/invitation.png" alt="invitation" width={"20px"} height={"20px"} style={{verticalAlign: 'middle'}} /></span> Team Invitations</h3>
-            <span style={{ fontSize: 12, color: 'var(--accent-bright)', background: 'rgba(59,130,246,0.1)', padding: '2px 8px', borderRadius: 99 }}>
-              {invitations.length} pending
-            </span>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {invitations.map(inv => (
-              <div key={inv.id} className="card card-sm" style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 600, color: 'var(--text-mid)' }}>{inv.team_name}</div>
-                  <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
-                    Invited by <strong>{inv.inviter_name}</strong> · {formatTime(inv.created_at)}
-                  </div>
-                  {inv.message && <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>"{inv.message}"</div>}
-                </div>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <button className="btn btn-sm btn-success" onClick={() => handleInviteResponse(inv.id, 'accepted')}>Accept</button>
-                  <button className="btn btn-sm btn-ghost2" onClick={() => handleInviteResponse(inv.id, 'rejected')}>Decline</button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+        
 
-      {/* Notifications */}
+      
+
+      <div className="dashboard-cols" style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 24, alignItems: 'start' }}>
+
+        
+        {/* Left column */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+
+          <div style={{ 
+          background: 'linear-gradient(145deg,rgba(15, 22, 41, 0.85) 0%,rgba(4, 14, 35, 0.75) 100%)',
+          padding: 14,
+          borderRadius: 12,
+          border: '1px solid #204d81',
+          }}>
+
+          {/* Pending invitations */}
+          {invitations.length > 0 && (
+            <div style={{marginBottom: 28}}>
+              <div className="section-header">
+                <h3 className="section-title"><span><img src="/images/invitation.png" alt="invitation" width={"20px"} height={"20px"} style={{verticalAlign: 'middle'}} /></span> Team Invitations</h3>
+                <span style={{ fontSize: 12, color: 'var(--accent-bright)', background: 'rgba(59,130,246,0.1)', padding: '2px 8px', borderRadius: 99 }}>
+                  {invitations.length} pending
+                </span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {invitations.map(inv => (
+                  <div key={inv.id} className="card card-sm" style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 600, color: 'var(--text-mid)' }}>{inv.team_name}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
+                        Invited by <strong>{inv.inviter_name}</strong> · {formatTime(inv.created_at)}
+                      </div>
+                      {inv.message && <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>"{inv.message}"</div>}
+                    </div>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button className="btn btn-sm btn-success" onClick={() => handleInviteResponse(inv.id, 'accepted')}>Accept</button>
+                      <button className="btn btn-sm btn-ghost2" onClick={() => handleInviteResponse(inv.id, 'rejected')}>Decline</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Notifications */}
           <div>
             <div className="section-header">
-              <h3 className="section-title">🔔 Notifications</h3>
+              <h3 className="section-title">🔔 Nofitications</h3>
+                <button className="btn btn-sm btn-ghost" style={{verticalAlign: 'middle'}} onClick={handleClearAllNotifications}>Clear All</button>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {(data?.notifications || []).slice(0, 5).map(n => (
                 <div key={n.id} className="card card-sm" style={{
-                  opacity: n.is_read ? 0.6 : 1,
-                  borderLeft: n.is_read ? 'none' : '2px solid var(--accent)',
-                  padding: '12px 14px',
-                }}>
-                  <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--text-mid)' }}>{n.title}</div>
-                  {n.body && <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>{n.body.length > 70 ? `${n.body.slice(0, 70)}...` : n.body}</div>}
-                  <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 4 }}>{formatTime(n.created_at)}</div>
+                    opacity: n.is_read ? 0.6 : 1,
+                    borderLeft: n.is_read ? 'none' : '2px solid var(--accent)',
+                    padding: '12px 14px',
+                    display: 'flex', 
+                    alignItems: 'center',  
+                  }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--text-mid)' }}>{n.title}</div>
+                      {n.body && <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>{n.body.length > 70 ? `${n.body.slice(0, 70)}...` : n.body}</div>}
+                    </div>
+
+                    <div>
+                      <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 4 }}>{formatTime(n.created_at)}</div>
+                      <div style={{ display: 'flex', gap: 8 }}>
+                          <button className="btn btn-sm btn-success" onClick={() => handleClearNotification(n.id)}>Clear</button>
+                        </div>
+                    </div>
+                  
+                  
                 </div>
               ))}
               {(!data?.notifications || data.notifications.length === 0) && (
@@ -141,14 +192,15 @@ export default function DashboardPage() {
               )}
             </div>
           </div> <br />
+        </div>
 
-      <div className="dashboard-cols" style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 24, alignItems: 'start' }}>
-
-        
-        {/* Left column */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           {/* My Teams */}
-          <div>
+          <div style={{
+            background: 'linear-gradient(145deg,rgba(15, 22, 41, 0.85) 0%,rgba(4, 14, 35, 0.75) 100%)',
+            padding: 14,
+            borderRadius: 12,
+            border: '1px solid #204d81',
+            }}>
             <div className="section-header">
               <h3 className="section-title"><img src="/images/team.png" alt="teams" width={"30px"} height={"30px"} style={{verticalAlign: 'middle', marginRight: '6px'}} /> My Teams</h3>
               <Link to="/teams" style={{ fontSize: 13, color: 'var(--accent-bright)', textDecoration: 'none' }}>View all →</Link>
@@ -189,12 +241,17 @@ export default function DashboardPage() {
               </div>
             )}
           </div>
-        </div>
+      </div>
 
         {/* Right column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           {/* Suggested Talent */}
-          <div>
+          <div style={{ 
+            background: 'linear-gradient(145deg,rgba(15, 22, 41, 0.85) 0%,rgba(4, 14, 35, 0.75) 100%)',
+            padding: 14,
+            borderRadius: 12,
+            border: '1px solid #204d81',
+            }}>
             <div className="section-header">
               <h3 className="section-title"><img src="/images/stars.png" alt="stars" width={"20px"} height={"20px"} style={{verticalAlign: 'middle', marginRight: '6px'}} /> Suggested Talent</h3>
               <Link to="/explore" style={{ fontSize: 13, color: 'var(--accent-bright)', textDecoration: 'none' }}>Explore →</Link>

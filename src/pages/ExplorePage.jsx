@@ -17,6 +17,7 @@ export default function ExplorePage() {
   const [inviteMsg, setInviteMsg] = useState('');
   const [inviteStatus, setInviteStatus] = useState('');
   const navigate = useNavigate();
+  const [onlineIds, setOnlineIds] = useState(new Set());
 
   // FIX: Removed useCallback wrapper for fetchUsers — it was causing a
   // re-creation loop where fetchUsers reference change re-triggered the
@@ -44,6 +45,18 @@ export default function ExplorePage() {
       controller.abort();
     };
   }, [filters.talent, filters.skill_level, filters.search]);
+
+  useEffect(() => {
+  usersAPI.getOnlineUsers()
+    .then(res => setOnlineIds(new Set(res.data.online_user_ids)))
+    .catch(() => {});
+  const interval = setInterval(() => {
+    usersAPI.getOnlineUsers()
+      .then(res => setOnlineIds(new Set(res.data.online_user_ids)))
+      .catch(() => {});
+  }, 60000); // refresh every 60s
+  return () => clearInterval(interval);
+}, []);
 
   useEffect(() => {
     teamsAPI.getMyTeams().then(res => setMyTeams(res.data.teams || [])).catch(() => {});
@@ -105,7 +118,7 @@ export default function ExplorePage() {
           {users.map(u => (
             <div key={u.id} className="card" style={{ display: 'flex', flexDirection: 'column', gap: 14 }} onClick={() => navigate("/userprofile", {state : {u}})}>
               <div style={{ display: 'flex', gap: 12 }}>
-                <Avatar user={u} size={48} />
+                <Avatar user={u} size={48} isOnline={onlineIds.has(u.id)} />
                 <div style={{ flex: 1, overflow: 'hidden' }}>
                   <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text-mid)' }}>{u.name}</div>
                   <TalentBadge talent={u.primary_talent} />
@@ -113,7 +126,7 @@ export default function ExplorePage() {
               </div>
               {u.bio && (
                 <p style={{
-                  fontSize: 13, color: 'var(--text-dark)', lineHeight: 1.5,
+                  fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.5,
                   overflow: 'hidden', display: '-webkit-box',
                   WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
                 }}>{u.bio}</p>
@@ -150,7 +163,7 @@ export default function ExplorePage() {
           <div className="alert alert-success">✅ Invitation sent successfully!</div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <p style={{ color: 'var(--text-dark)', fontSize: 14 }}>
+            <p style={{ color: 'var(--text-tertiary)', fontSize: 14 }}>
               Choose a team to invite <strong>{inviteModal?.name}</strong> to:
             </p>
             {myTeams.length === 0 ? (

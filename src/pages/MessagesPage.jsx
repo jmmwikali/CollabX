@@ -153,7 +153,7 @@ export default function MessagesPage() {
                     <span style={{ fontWeight: 600, fontSize: 14 }}>{conv.other_user_name}</span>
                     <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>{formatTime(conv.last_message_at)}</span>
                   </div>
-                  <div style={{ fontSize: 12, color: 'var(--text-dark)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <div style={{ fontSize: 12, color: 'var(--text-tertiary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {conv.last_message || 'No messages yet'}
                   </div>
                 </div>
@@ -219,7 +219,7 @@ export default function MessagesPage() {
                           padding: '9px 14px',
                           borderRadius: isMe ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
                           background: isMe ? 'linear-gradient(135deg, var(--accent), #2563eb)' : 'var(--bg-glass)',
-                          color: isMe ? 'white' : 'var(--text-muted)',
+                          color: isMe ? 'white' : 'var(--text-secondary)',
                           fontSize: 14,
                           lineHeight: 1.5,
                         }}>

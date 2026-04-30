@@ -32,22 +32,35 @@ export const talentLabel = {
   other: 'Other',
 };
 
-export function Avatar({ user, size = 36, className = '' }) {
+export function Avatar({ user, size = 36, className = '', isOnline = false }) {
   const name = user?.name || '?';
   const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+
+  const dot = isOnline ? (
+    <span style={{
+      position: 'absolute', bottom: 1, right: 1,
+      width: size * 0.28, height: size * 0.28,
+      background: '#22c55e', borderRadius: '50%',
+      border: '1px solid var(--bg-surface, #000)',
+    }} />
+  ) : null;
+
+  const wrapper = (child) => (
+    <div style={{ position: 'relative', display: 'inline-block', width: size, height: size }}>
+      {child}{dot}
+    </div>
+  );
+
   if (user?.avatar_url) {
-    return (
-      <img
-        src={user.avatar_url}
-        alt={name}
-        className={`avatar ${className}`}
+    return wrapper(
+      <img src={user.avatar_url} alt={name} className={`avatar ${className}`}
         style={{ width: size, height: size }}
-        onError={(e) => { e.target.style.display='none'; }}
-      />
+        onError={(e) => { e.target.style.display = 'none'; }} />
     );
   }
-  return (
-    <div className={`avatar-fallback ${className}`} style={{ width: size, height: size, fontSize: size * 0.35 }}>
+  return wrapper(
+    <div className={`avatar-fallback ${className}`}
+      style={{ width: size, height: size, fontSize: size * 0.35 }}>
       {initials}
     </div>
   );
@@ -220,7 +233,7 @@ export function Modal({ isOpen, onClose, title, children }) {
       <div className="modal">
         <div className="modal-header">
           <h2 className="modal-title">{title}</h2>
-          <button className="btn btn-ghost btn-icon" onClick={onClose} style={{ fontSize: 18, color: "var(--text-mid)"}}>✕</button>
+          <button className="btn btn-ghost btn-icon" onClick={onClose} style={{ fontSize: 18, color: "var(--text-tertiary)"}}>✕</button>
         </div>
         {children}
       </div>

@@ -54,6 +54,7 @@ export const usersAPI = {
   getUserById: (id) => api.get(`/users/${id}`),
   getSuggestions: () => api.get('/users/suggestions'),
   getUsersByTalent: (talent, params) => api.get(`/users/talent/${talent}`, { params }),
+  getOnlineUsers: () => api.get('/users/online'),
 };
 
 // Teams
@@ -86,6 +87,11 @@ export const dashboardAPI = {
   getDashboard: () => api.get('/dashboard/'),
   getNotifications: () => api.get('/dashboard/notifications'),
   markNotificationsRead: () => api.put('/dashboard/notifications/read'),
+  deleteNotification: (id) => api.delete('/dashboard/notifications/delete', { data: { id } }),
+  clearAllNotifications: () => api.delete('/dashboard/notifications/delete', {
+    data: {},
+    headers: { 'Content-Type': 'application/json' },
+  }),
 };
 
 export default api;

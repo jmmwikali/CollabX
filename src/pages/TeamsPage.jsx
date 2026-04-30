@@ -152,14 +152,14 @@ export default function TeamsPage() {
               }}><img src="/images/team.png" alt="teams" width={'24px'} height={'24px'}/></div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: 700, fontSize: 18, color: 'var(--text-mid)' }}>{inv.team_name}</div>
-                <div style={{ fontSize: 13, color: 'var(--text-dark)', margin: '4px 0' }}>
+                <div style={{ fontSize: 13, color: 'var(--text-tertiary)', margin: '4px 0' }}>
                   Invited by <strong>{inv.inviter_name}</strong> ({inv.inviter_talent?.replace('_', ' ')}) · {formatTime(inv.created_at)}
                 </div>
                 {inv.team_description && (
                   <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{inv.team_description}</div>
                 )}
                 {inv.message && (
-                  <div style={{ marginTop: 8, fontSize: 13, fontStyle: 'italic', color: 'var(--text-dark)', background: 'var(--bg-elevated)', padding: '8px 12px', borderRadius: 'var(--radius)' }}>
+                  <div style={{ marginTop: 8, fontSize: 13, fontStyle: 'italic', color: 'var(--text-primary)', background: 'var(--bg-elevated)', padding: '8px 12px', borderRadius: 'var(--radius)' }}>
                     "{inv.message}"
                   </div>
                 )}

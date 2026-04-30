@@ -312,17 +312,18 @@ function CreateTeamInviteForm({ onCreated, onCancel }) {
             onChange={e => setForm(f => ({ ...f, commitment_level: e.target.value }))}>
             <option value="">Select…</option>
             <option value="part_time">Part-time</option>
-            <option value="full_time">Full-time</option>
             <option value="weekends">Weekends only</option>
             <option value="flexible">Flexible</option>
           </select>
         </div>
+
+        <div className="form-group">
+          <label className="form-label">Application deadline (optional)</label>
+          <input type="date" className="form-input date" value={form.deadline}
+            onChange={e => setForm(f => ({ ...f, deadline: e.target.value }))} />
+        </div>
       </div>
-      <div className="form-group">
-        <label className="form-label">Application deadline (optional)</label>
-        <input type="date" className="form-input" value={form.deadline}
-          onChange={e => setForm(f => ({ ...f, deadline: e.target.value }))} />
-      </div>
+      
       {error && <div className="alert alert-error">{error}</div>}
       <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
         <button className="btn btn-ghost2 btn-sm" onClick={onCancel}>Cancel</button>

@@ -16,18 +16,34 @@ export default function ProfilePage() {
   const { user, updateUser } = useAuth();
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({
-    name: user?.name || '',
-    bio: user?.bio || '',
-    primary_talent: user?.primary_talent || 'other',
-    skill_level: user?.skill_level || 'beginner',
-    avatar_url: user?.avatar_url || '',
-    portfolio_links: (() => {
-      try {
-        const raw = user?.portfolio_links;
-        return Array.isArray(raw) ? raw : typeof raw === 'string' ? JSON.parse(raw) : [];
-      } catch { return []; }
-    })(),
-  });
+  name: user?.name || '',
+  bio: user?.bio || '',
+  primary_talent: user?.primary_talent || 'other',
+  skill_level: user?.skill_level || 'beginner',
+  avatar_url: user?.avatar_url || '',
+
+  portfolio_links: (() => {
+    try {
+      const raw = user?.portfolio_links;
+      return Array.isArray(raw)
+        ? raw
+        : typeof raw === 'string'
+        ? JSON.parse(raw)
+        : [];
+    } catch { return []; }
+  })(),
+
+  secondary_skills: (() => {
+    try {
+      const raw = user?.secondary_skills;
+      return Array.isArray(raw)
+        ? raw
+        : typeof raw === 'string'
+        ? JSON.parse(raw)
+        : [];
+    } catch { return []; }
+  })(),
+});
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState('');
 
@@ -106,6 +122,60 @@ export default function ProfilePage() {
               <div className="form-group">
                 <label className="form-label">Bio</label>
                 <textarea className="form-textarea" value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })} placeholder="Tell the community about yourself..." />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Secondary Skills</label>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {form.secondary_skills.map((skill, i) => (
+                    <div key={i} style={{ display: 'flex', gap: 8 }}>
+                      
+                      <input
+                        className="form-input"
+                        placeholder="e.g. React, UI Design"
+                        value={skill}
+                        onChange={e => {
+                          const updated = [...form.secondary_skills];
+                          updated[i] = e.target.value;
+                          setForm({ ...form, secondary_skills: updated });
+                        }}
+                        style={{ flex: 1 }}
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = form.secondary_skills.filter((_, idx) => idx !== i);
+                          setForm({ ...form, secondary_skills: updated });
+                        }}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: 'var(--text-muted)',
+                          cursor: 'pointer',
+                          fontSize: 18,
+                        }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-sm"
+                    style={{width: 100}}
+                    onClick={() =>
+                      setForm({
+                        ...form,
+                        secondary_skills: [...form.secondary_skills, ''],
+                      })
+                    }
+                  >
+                    + Add Skill
+                  </button>
+                </div>
               </div>
 
               {/* Portfolio Links */}
@@ -199,7 +269,7 @@ export default function ProfilePage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {portfolioLinks.map((link, i) => (
                   <a key={i} href={link} target="_blank" rel="noopener noreferrer" style={{
-                    fontSize: 13, color: 'var(--text-dark)', textDecoration: 'none',
+                    fontSize: 13, color: 'var(--text-tertiary)', textDecoration: 'none',
                     display: 'flex', alignItems: 'center', gap: 6,
                   }}>
                     🔗 {link}
@@ -219,7 +289,7 @@ export default function ProfilePage() {
           ].map(s => (
             <div key={s.label} className="card card-sm" style={{ textAlign: 'center' }}>
               <img src={s.icon} alt={s.label} style={{ width: 50, height: 50 }} />
-              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 15, color: 'var(--text-dark)'}}>{s.value}</div>
+              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 15, color: 'var(--text-primary)'}}>{s.value}</div>
               <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{s.label}</div>
             </div>
           ))}

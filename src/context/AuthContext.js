@@ -33,6 +33,14 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  useEffect(() => {
+  if (!user) return;
+  const interval = setInterval(() => {
+    authAPI.getMe().catch(() => {});
+  }, 2 * 60 * 1000); // every 2 min
+  return () => clearInterval(interval);
+}, [user]);
+
   const login = useCallback(async (email, password) => {
     const res = await authAPI.login({ email, password });
     const { token, user: userData } = res.data;

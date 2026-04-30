@@ -125,7 +125,7 @@ export default function TeamDetailPage() {
               display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18,
             }}><img src="/images/team.png" alt="teams" width={'24px'} height={'24px'}/></div>
             <div>
-              <div style={{ fontWeight: 700, color: 'var(--text-dark)' }}>{team.name}</div>
+              <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{team.name}</div>
               <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
                 {team.members?.length} members · {messages.length} messages
               </div>
@@ -199,7 +199,7 @@ export default function TeamDetailPage() {
         {/* Sidebar */}
         <div className={`team-sidebar-panel${showChat ? ' hidden-mobile' : ''}`} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <div className="card">
-            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, marginBottom: 10, color: 'var(--text-dark)'}}>About</div>
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, marginBottom: 10, color: 'var(--text-primary)'}}>About</div>
             <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
               {team.description || 'No description provided.'}
             </p>
@@ -211,7 +211,7 @@ export default function TeamDetailPage() {
           </div>
 
           <div className="card" style={{ padding: '16px' }}>
-            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, marginBottom: 12, display: 'flex', justifyContent: 'space-between', color: 'var(--text-dark)' }}>
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, marginBottom: 12, display: 'flex', justifyContent: 'space-between', color: 'var(--text-primary)' }}>
               <span>Members</span>
               <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{team.members?.length}</span>
             </div>
