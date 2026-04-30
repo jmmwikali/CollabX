@@ -17,13 +17,10 @@ function VoteBar({ label, count, total, selected }) {
         <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>{pct}% ({count})</span>
       </div>
       <div style={{
-        height: 8, borderRadius: 99, background: 'rgba(255,255,255,0.08)',
-        overflow: 'hidden',
+        height: 8, borderRadius: 99, background: 'rgba(255,255,255,0.08)', overflow: 'hidden',
       }}>
         <div style={{
-          height: '100%',
-          width: `${pct}%`,
-          borderRadius: 99,
+          height: '100%', width: `${pct}%`, borderRadius: 99,
           background: selected
             ? 'linear-gradient(90deg, var(--accent), var(--accent2))'
             : 'rgba(157,217,253,0.35)',
@@ -87,132 +84,145 @@ function PollCard({ post, onVoted, onDeleted }) {
     } finally { setVoting(false); }
   };
 
+  // Find leading option index
+  const leadingIdx = hasVoted && localTotalVotes > 0
+    ? Object.entries(localVoteCounts).reduce((a, b) => (b[1] > a[1] ? b : a), [0, 0])[0]
+    : null;
+
   return (
-    <div className="card" style={{ marginBottom: 16 }}>
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
-        <Avatar user={post.author} size={40} />
-        <div style={{ flex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--text-mid)' }}>{post.author?.name}</span>
-            <TalentBadge talent={post.author?.primary_talent} />
-          </div>
-          <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{formatTime(post.created_at)}</div>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
-          <span style={{
-            fontSize: 10, fontWeight: 700, padding: '3px 10px', borderRadius: 99,
-            background: 'rgba(196,154,74,0.12)', color: '#d4b070', border: '1px solid rgba(196,154,74,0.2)',
-            letterSpacing: '0.5px', textTransform: 'uppercase',
-          }}>📊 Poll</span>
-          {isMulti && (
-            <span style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600 }}>Multi-choice</span>
-          )}
-        </div>
+    <div className="card" style={{ marginBottom: 16, overflow: 'hidden', padding: 0 }}>
+
+      {/* Card top strip */}
+      <div style={{
+        padding: '10px 18px',
+        background: 'rgba(196,154,74,0.06)',
+        borderBottom: '1px solid rgba(196,154,74,0.12)',
+        display: 'flex', alignItems: 'center', gap: 10,
+      }}>
+        <span style={{ fontSize: 16 }}>📊</span>
+        <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: '#d4b070' }}>
+          {isMulti ? 'Multi-Choice Poll' : 'Community Poll'}
+        </span>
+        {hasVoted && (
+          <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--success)', fontWeight: 600 }}>
+            ✓ You voted
+          </span>
+        )}
+        {!hasVoted && localTotalVotes > 0 && (
+          <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--text-muted)' }}>
+            {localTotalVotes} vote{localTotalVotes !== 1 ? 's' : ''}
+          </span>
+        )}
       </div>
 
-      {/* Question */}
-      <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700, color: 'var(--text-mid)', marginBottom: 14 }}>
-        {post.title}
-      </h3>
-      {post.description && (
-        <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 14 }}>{post.description}</p>
-      )}
-
-      {/* Options */}
-      {hasVoted ? (
-        // Show results
-        <div style={{ marginBottom: 14 }}>
-          {options.map((opt, idx) => (
-            <VoteBar
-              key={idx}
-              label={opt}
-              count={localVoteCounts[idx] || 0}
-              total={localTotalVotes}
-              selected={myVotes.includes(idx)}
-            />
-          ))}
-          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>
-            {localTotalVotes} vote{localTotalVotes !== 1 ? 's' : ''} total
+      <div style={{ padding: '16px 18px' }}>
+        {/* Author */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+          <Avatar user={post.author} size={34} />
+          <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontWeight: 700, fontSize: 13, color: 'var(--text-mid)' }}>{post.author?.name}</span>
+              <TalentBadge talent={post.author?.primary_talent} />
+            </div>
+            <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{formatTime(post.created_at)}</div>
           </div>
-        </div>
-      ) : (
-        // Show clickable options
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 14 }}>
-          {options.map((opt, idx) => {
-            const isSelected = selectedIndices.includes(idx);
-            return (
-              <button
-                key={idx}
-                onClick={() => toggleOption(idx)}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 10,
-                  padding: '10px 14px', borderRadius: 'var(--radius)',
-                  border: `1px solid ${isSelected ? 'var(--accent)' : 'var(--border)'}`,
-                  background: isSelected ? 'rgba(157,217,253,0.1)' : 'var(--bg-glass)',
-                  cursor: 'pointer', textAlign: 'left',
-                  transition: 'all var(--transition-base)',
-                  color: isSelected ? 'var(--accent)' : 'var(--text-secondary)',
-                  fontWeight: isSelected ? 600 : 400, fontSize: 13.5,
-                  fontFamily: 'var(--font-body)',
-                }}
-              >
-                <span style={{
-                  width: 18, height: 18, borderRadius: isMulti ? 4 : 99,
-                  border: `2px solid ${isSelected ? 'var(--accent)' : 'var(--border)'}`,
-                  background: isSelected ? 'var(--accent)' : 'transparent',
-                  flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 11, color: '#0b2233',
-                  transition: 'all var(--transition-base)',
-                }}>
-                  {isSelected && '✓'}
-                </span>
-                {opt}
-              </button>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Footer */}
-      {!hasVoted && (
-        <>
-          {error && <div className="alert alert-error" style={{ marginBottom: 10 }}>{error}</div>}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <button
-              className="btn btn-primary btn-sm"
-              onClick={handleVote}
-              disabled={voting || selectedIndices.length === 0}
-            >
-              {voting ? 'Voting…' : 'Vote'}
+          {post.is_mine && (
+            <button className="btn btn-danger btn-sm" style={{ fontSize: 11 }}
+              onClick={handleDelete} disabled={deleting}>
+              {deleting ? 'Removing…' : '🗑 Take Down'}
             </button>
-            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-              {localTotalVotes} vote{localTotalVotes !== 1 ? 's' : ''} so far
-            </span>
-            {post.is_mine && (
-              <button
-                className="btn btn-danger btn-sm"
-                style={{ marginLeft: 'auto' }}
-                onClick={handleDelete}
-                disabled={deleting}
-              >
-                {deleting ? 'Removing…' : '🗑 Take Down'}
-              </button>
-            )}
-          </div>
-        </>
-      )}
-      {hasVoted && post.is_mine && (
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
-          <button
-            className="btn btn-danger btn-sm"
-            onClick={handleDelete}
-            disabled={deleting}
-          >
-            {deleting ? 'Removing…' : '🗑 Take Down'}
-          </button>
+          )}
         </div>
-      )}
+
+        {/* Question */}
+        <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700, color: 'var(--text-mid)', marginBottom: 6, lineHeight: 1.35 }}>
+          {post.title}
+        </h3>
+        {post.description && (
+          <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 14, lineHeight: 1.6 }}>{post.description}</p>
+        )}
+
+        {/* Options */}
+        {hasVoted ? (
+          <div style={{ marginBottom: 12 }}>
+            {options.map((opt, idx) => (
+              <VoteBar
+                key={idx}
+                label={opt}
+                count={localVoteCounts[idx] || 0}
+                total={localTotalVotes}
+                selected={myVotes.includes(idx)}
+              />
+            ))}
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 8,
+              marginTop: 10, paddingTop: 10, borderTop: '1px solid var(--border)',
+            }}>
+              <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                {localTotalVotes} vote{localTotalVotes !== 1 ? 's' : ''} total
+              </span>
+              {leadingIdx !== null && options[leadingIdx] && (
+                <span style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 600 }}>
+                  · Leading: {options[leadingIdx]}
+                </span>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 14 }}>
+            {options.map((opt, idx) => {
+              const isSelected = selectedIndices.includes(idx);
+              return (
+                <button
+                  key={idx}
+                  onClick={() => toggleOption(idx)}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 10,
+                    padding: '10px 14px', borderRadius: 'var(--radius)',
+                    border: `1px solid ${isSelected ? 'var(--accent)' : 'var(--border)'}`,
+                    background: isSelected ? 'rgba(157,217,253,0.1)' : 'var(--bg-glass)',
+                    cursor: 'pointer', textAlign: 'left',
+                    transition: 'all var(--transition-base)',
+                    color: isSelected ? 'var(--accent)' : 'var(--text-secondary)',
+                    fontWeight: isSelected ? 600 : 400, fontSize: 13.5,
+                    fontFamily: 'var(--font-body)',
+                  }}
+                >
+                  <span style={{
+                    width: 18, height: 18, borderRadius: isMulti ? 4 : 99,
+                    border: `2px solid ${isSelected ? 'var(--accent)' : 'var(--border)'}`,
+                    background: isSelected ? 'var(--accent)' : 'transparent',
+                    flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 11, color: '#0b2233',
+                    transition: 'all var(--transition-base)',
+                  }}>
+                    {isSelected && '✓'}
+                  </span>
+                  {opt}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Footer */}
+        {!hasVoted && (
+          <>
+            {error && <div className="alert alert-error" style={{ marginBottom: 10 }}>{error}</div>}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <button className="btn btn-primary btn-sm" onClick={handleVote}
+                disabled={voting || selectedIndices.length === 0}>
+                {voting ? 'Voting…' : '🗳 Cast Vote'}
+              </button>
+              {localTotalVotes > 0 && (
+                <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                  {localTotalVotes} vote{localTotalVotes !== 1 ? 's' : ''} so far
+                </span>
+              )}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
@@ -290,7 +300,7 @@ function CreatePollForm({ onCreated, onCancel }) {
       <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
         <button className="btn btn-ghost2 btn-sm" onClick={onCancel}>Cancel</button>
         <button className="btn btn-primary btn-sm" onClick={handleSubmit} disabled={submitting}>
-          {submitting ? 'Posting…' : 'Post Poll'}
+          {submitting ? 'Posting…' : '📊 Post Poll'}
         </button>
       </div>
     </div>
@@ -312,10 +322,27 @@ export default function PollsModule({ posts, onPostCreated, onPostsUpdate }) {
     onPostsUpdate(prev => prev.filter(p => p.id !== postId));
   };
 
+  const totalVotes = posts.reduce((acc, p) => acc + (p.poll_total_votes || 0), 0);
+
   return (
     <div>
-      <div className="section-header" style={{ marginBottom: 20 }}>
-        <h3 className="section-title">📊 Polls & Opinions</h3>
+      {/* Module header */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 14,
+        marginBottom: 24, padding: '16px 20px',
+        background: 'rgba(196,154,74,0.05)',
+        border: '1px solid rgba(196,154,74,0.12)',
+        borderRadius: 'var(--radius-lg)',
+      }}>
+        <div style={{ fontSize: 32 }}>📊</div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 18, color: 'var(--text-mid)' }}>
+            Polls & Opinions
+          </div>
+          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+            {posts.length} poll{posts.length !== 1 ? 's' : ''} · {totalVotes} total votes · Have your say
+          </div>
+        </div>
         <button className="btn btn-primary btn-sm" onClick={() => setShowCreate(v => !v)}>
           {showCreate ? '✕ Cancel' : '+ Create Poll'}
         </button>
@@ -324,7 +351,7 @@ export default function PollsModule({ posts, onPostCreated, onPostsUpdate }) {
       {showCreate && (
         <div className="card" style={{ marginBottom: 20 }}>
           <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 16, color: 'var(--text-mid)', marginBottom: 16 }}>
-            New Poll
+            📊 New Poll
           </div>
           <CreatePollForm
             onCreated={(post) => { onPostCreated(post); setShowCreate(false); }}

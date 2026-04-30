@@ -125,87 +125,106 @@ function SkillExchangeCard({ post, onLikeToggle, onDeleted }) {
 
   return (
     <>
-      <div className="card" style={{ marginBottom: 16 }}>
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
-          <Avatar user={post.author} size={40} />
-          <div style={{ flex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--text-mid)' }}>{post.author?.name}</span>
-              <TalentBadge talent={post.author?.primary_talent} />
-            </div>
-            <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{formatTime(post.created_at)}</div>
-          </div>
-          <span style={{
-            fontSize: 10, fontWeight: 700, padding: '3px 10px', borderRadius: 99,
-            background: 'rgba(0,255,179,0.1)', color: 'var(--success)', border: '1px solid rgba(0,255,179,0.2)',
-            letterSpacing: '0.5px', textTransform: 'uppercase',
-          }}>Skill Exchange</span>
-        </div>
+      <div className="card" style={{ marginBottom: 16, overflow: 'hidden', padding: 0 }}>
 
-        <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700, color: 'var(--text-mid)', marginBottom: 6 }}>
-          {post.title}
-        </h3>
-        {post.description && (
-          <p style={{ fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.65, marginBottom: 12 }}>
-            {post.description}
-          </p>
-        )}
-
-        {/* Skill exchange cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 12 }}>
-          {post.skills_offered?.length > 0 && (
-            <div style={{ background: 'rgba(0,255,179,0.05)', borderRadius: 'var(--radius)', padding: '10px 12px', border: '1px solid rgba(0,255,179,0.1)' }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--success)', marginBottom: 6, letterSpacing: '0.8px' }}>I CAN OFFER</div>
-              <div>{post.skills_offered.map(s => <TagPill key={s} label={s} variant="offer" />)}</div>
-            </div>
-          )}
-          {post.skills_needed?.length > 0 && (
-            <div style={{ background: 'rgba(157,217,253,0.05)', borderRadius: 'var(--radius)', padding: '10px 12px', border: '1px solid rgba(157,217,253,0.1)' }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--accent)', marginBottom: 6, letterSpacing: '0.8px' }}>I NEED</div>
-              <div>{post.skills_needed.map(s => <TagPill key={s} label={s} variant="need" />)}</div>
-            </div>
+        {/* Header stripe */}
+        <div style={{
+          padding: '10px 18px',
+          background: 'rgba(0,255,179,0.05)',
+          borderBottom: '1px solid rgba(0,255,179,0.1)',
+          display: 'flex', alignItems: 'center', gap: 10,
+        }}>
+          <span style={{ fontSize: 16 }}>🔁</span>
+          <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--success)' }}>
+            Skill Exchange
+          </span>
+          {post.collab_goal && (
+            <span style={{ fontSize: 11, color: 'var(--text-muted)', marginLeft: 4 }}>
+              · {post.collab_goal}
+            </span>
           )}
         </div>
 
-        {post.collab_goal && (
-          <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 12, fontStyle: 'italic' }}>
-            🎯 {post.collab_goal}
+        <div style={{ padding: '16px 18px' }}>
+          {/* Author */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+            <Avatar user={post.author} size={36} />
+            <div style={{ flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontWeight: 700, fontSize: 13, color: 'var(--text-mid)' }}>{post.author?.name}</span>
+                <TalentBadge talent={post.author?.primary_talent} />
+              </div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{formatTime(post.created_at)}</div>
+            </div>
           </div>
-        )}
 
-        {/* Actions row */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, borderTop: '1px solid var(--border)', paddingTop: 12 }}>
-          <button
-            className="btn btn-ghost btn-sm"
-            onClick={handleLike}
-            disabled={liking}
-            style={{ color: post.liked_by_me ? '#ff6b9d' : 'var(--text-muted)', gap: 5 }}
-          >
-            {post.liked_by_me ? '❤️' : '🤍'} {post.like_count}
-          </button>
-          {!post.is_mine && (
-            <button className="btn btn-primary btn-sm" onClick={() => setShowCollab(true)}>
-              🤝 Collaborate
-            </button>
+          <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700, color: 'var(--text-mid)', marginBottom: 6 }}>
+            {post.title}
+          </h3>
+          {post.description && (
+            <p style={{ fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.65, marginBottom: 14 }}>
+              {post.description}
+            </p>
           )}
-          {post.is_mine && (
+
+          {/* Offer ↔ Need exchange visual */}
+          {(post.skills_offered?.length > 0 || post.skills_needed?.length > 0) && (
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: 8, alignItems: 'center', marginBottom: 14 }}>
+              {post.skills_offered?.length > 0 ? (
+                <div style={{
+                  background: 'rgba(0,255,179,0.05)', borderRadius: 'var(--radius)',
+                  padding: '10px 12px', border: '1px solid rgba(0,255,179,0.12)',
+                }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--success)', marginBottom: 6, letterSpacing: '0.8px' }}>✦ I CAN OFFER</div>
+                  <div>{post.skills_offered.map(s => <TagPill key={s} label={s} variant="offer" />)}</div>
+                </div>
+              ) : <div />}
+
+              <div style={{ fontSize: 18, textAlign: 'center', color: 'var(--text-muted)', userSelect: 'none' }}>⇄</div>
+
+              {post.skills_needed?.length > 0 ? (
+                <div style={{
+                  background: 'rgba(157,217,253,0.05)', borderRadius: 'var(--radius)',
+                  padding: '10px 12px', border: '1px solid rgba(157,217,253,0.12)',
+                }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--accent)', marginBottom: 6, letterSpacing: '0.8px' }}>◈ I NEED</div>
+                  <div>{post.skills_needed.map(s => <TagPill key={s} label={s} variant="need" />)}</div>
+                </div>
+              ) : <div />}
+            </div>
+          )}
+
+          {/* Actions */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, borderTop: '1px solid var(--border)', paddingTop: 12 }}>
             <button
-              className="btn btn-danger btn-sm"
-              style={{ marginLeft: 'auto' }}
-              onClick={handleDelete}
-              disabled={deleting}
+              className="btn btn-ghost btn-sm"
+              onClick={handleLike}
+              disabled={liking}
+              style={{ color: post.liked_by_me ? '#ff6b9d' : 'var(--text-muted)', gap: 5 }}
             >
-              {deleting ? 'Removing…' : '🗑 Take Down'}
+              {post.liked_by_me ? '❤️' : '🤍'} {post.like_count}
             </button>
-          )}
-        </div>
+            {!post.is_mine && (
+              <button className="btn btn-primary btn-sm" onClick={() => setShowCollab(true)}>
+                🤝 Collaborate
+              </button>
+            )}
+            {post.is_mine && (
+              <button
+                className="btn btn-danger btn-sm"
+                style={{ marginLeft: 'auto' }}
+                onClick={handleDelete}
+                disabled={deleting}
+              >
+                {deleting ? 'Removing…' : '🗑 Take Down'}
+              </button>
+            )}
+          </div>
 
-        {/* Comments */}
-        <CommentsPanel postId={post.id} initialCount={post.comment_count} />
+          <CommentsPanel postId={post.id} initialCount={post.comment_count} />
+        </div>
       </div>
 
-      {/* Collab request — reuses DM-style modal */}
       <Modal isOpen={showCollab} onClose={() => setShowCollab(false)} title="Send Collaboration Request">
         <div style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 16 }}>
           To collaborate with <strong>{post.author?.name}</strong>, send them a direct message via the Messages page and reference this post.
@@ -280,7 +299,7 @@ function CreateSkillExchangeForm({ onCreated, onCancel }) {
       <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
         <button className="btn btn-ghost2 btn-sm" onClick={onCancel}>Cancel</button>
         <button className="btn btn-primary btn-sm" onClick={handleSubmit} disabled={submitting}>
-          {submitting ? 'Posting…' : 'Post Exchange'}
+          {submitting ? 'Posting…' : '🔁 Post Exchange'}
         </button>
       </div>
     </div>
@@ -302,8 +321,23 @@ export default function SkillExchangeModule({ posts, onPostCreated, onPostsUpdat
 
   return (
     <div>
-      <div className="section-header" style={{ marginBottom: 20 }}>
-        <h3 className="section-title">🔁 Skill Exchange</h3>
+      {/* Module header */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 14,
+        marginBottom: 24, padding: '16px 20px',
+        background: 'rgba(0,255,179,0.04)',
+        border: '1px solid rgba(0,255,179,0.1)',
+        borderRadius: 'var(--radius-lg)',
+      }}>
+        <div style={{ fontSize: 32 }}>🔁</div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 18, color: 'var(--text-mid)' }}>
+            Skill Exchange
+          </div>
+          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+            {posts.length} post{posts.length !== 1 ? 's' : ''} · Offer skills, find collaborators
+          </div>
+        </div>
         <button className="btn btn-primary btn-sm" onClick={() => setShowCreate(v => !v)}>
           {showCreate ? '✕ Cancel' : '+ Post Exchange'}
         </button>
@@ -312,7 +346,7 @@ export default function SkillExchangeModule({ posts, onPostCreated, onPostsUpdat
       {showCreate && (
         <div className="card" style={{ marginBottom: 20 }}>
           <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 16, color: 'var(--text-mid)', marginBottom: 16 }}>
-            New Skill Exchange Post
+            🔁 New Skill Exchange Post
           </div>
           <CreateSkillExchangeForm
             onCreated={(post) => { onPostCreated(post); setShowCreate(false); }}

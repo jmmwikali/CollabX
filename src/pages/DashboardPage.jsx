@@ -73,7 +73,7 @@ export default function DashboardPage() {
     >
       {/* Welcome banner */}
       <div className="dashboard-welcome" style={{
-        background: 'linear-gradient(135deg, #1e3a5f, #2d5a8e)',
+        background: 'linear-gradient(135deg,  rgba(28, 56, 110, 0.85) 0%,rgba(40, 82, 160, 0.75) 45%,rgba(18, 34, 70, 0.65) 100%)',
         border: '1px solid #2d5a8e',
         borderRadius: 'var(--radius)',
         padding: '28px 32px',

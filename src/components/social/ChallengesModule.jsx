@@ -47,77 +47,100 @@ function SubmissionsPanel({ postId, postUserId, currentUserId, iSubmitted, onSub
     finally { setVotingId(null); }
   };
 
+  const medals = ['🥇', '🥈', '🥉'];
+
   return (
-    <div style={{ marginTop: 12 }}>
-      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-        <button className="btn btn-ghost2 btn-sm" onClick={load} style={{ fontSize: 12 }}>
-          📋 {open ? 'Hide' : 'View'} submissions ({loaded ? subs.length : '…'})
+    <div style={{ marginTop: 16 }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 10,
+        padding: '10px 14px',
+        background: 'rgba(255,215,0,0.04)',
+        border: '1px solid rgba(255,215,0,0.12)',
+        borderRadius: 'var(--radius)',
+      }}>
+        <button className="btn btn-ghost2 btn-sm" onClick={load} style={{ fontSize: 12, gap: 6 }}>
+          🏆 {open ? 'Hide' : 'View'} Leaderboard ({loaded ? subs.length : '…'} entries)
         </button>
         {!iSubmitted && currentUserId !== postUserId && (
-          <span style={{ fontSize: 12, color: 'var(--accent)', cursor: 'pointer', textDecoration: 'underline' }}
+          <button className="btn btn-primary btn-sm" style={{ marginLeft: 'auto', fontSize: 12 }}
             onClick={() => { setOpen(true); setLoaded(true); }}>
-            + Submit entry
+            + Submit Entry
+          </button>
+        )}
+        {iSubmitted && (
+          <span style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--success)', fontWeight: 700 }}>
+            ✓ Entry Submitted
           </span>
         )}
-        {iSubmitted && <span style={{ fontSize: 12, color: 'var(--success)' }}>✓ You submitted</span>}
       </div>
 
       {open && (
         <div style={{ marginTop: 12 }}>
-          {/* Submit entry */}
           {!iSubmitted && currentUserId !== postUserId && (
-            <div style={{ marginBottom: 16, display: 'flex', gap: 8 }}>
-              <input className="form-input" placeholder="Paste your submission link or text…"
-                value={submitForm} onChange={e => setSubmitForm(e.target.value)}
-                style={{ flex: 1, fontSize: 13 }} />
-              <button className="btn btn-primary btn-sm" onClick={handleSubmit} disabled={posting || !submitForm.trim()}>
-                {posting ? '…' : 'Submit'}
-              </button>
+            <div style={{
+              marginBottom: 16, padding: '12px 14px',
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px dashed rgba(255,215,0,0.2)',
+              borderRadius: 'var(--radius)',
+            }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: '#d4c070', marginBottom: 8, letterSpacing: '0.8px' }}>YOUR SUBMISSION</div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <input className="form-input" placeholder="Paste your submission link or write your entry…"
+                  value={submitForm} onChange={e => setSubmitForm(e.target.value)}
+                  style={{ flex: 1, fontSize: 13 }} />
+                <button className="btn btn-primary btn-sm" onClick={handleSubmit} disabled={posting || !submitForm.trim()}>
+                  {posting ? '…' : '🚀 Submit'}
+                </button>
+              </div>
             </div>
           )}
 
-          {/* Submissions list */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 320, overflowY: 'auto' }}>
-            {subs.length === 0 && (
-              <div style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', padding: 12 }}>No submissions yet.</div>
-            )}
-            {subs.map((sub, idx) => (
-              <div key={sub.id} style={{
-                display: 'flex', gap: 10, alignItems: 'flex-start',
-                background: idx === 0 && subs.length > 1 ? 'rgba(0,255,179,0.04)' : undefined,
-                border: idx === 0 && subs.length > 1 ? '1px solid rgba(0,255,179,0.15)' : '1px solid var(--border)',
-                borderRadius: 'var(--radius)', padding: '10px 12px',
-              }}>
-                {idx === 0 && subs.length > 1 && (
-                  <span style={{ fontSize: 14, marginTop: 2 }}>🥇</span>
-                )}
-                <Avatar user={sub} size={30} />
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                    <span style={{ fontWeight: 600, fontSize: 12, color: 'var(--text-mid)' }}>{sub.name}</span>
-                    <TalentBadge talent={sub.primary_talent} />
-                    <span style={{ fontSize: 11, color: 'var(--text-muted)', marginLeft: 'auto' }}>{formatTime(sub.created_at)}</span>
+          {subs.length === 0 ? (
+            <div style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', padding: '20px 12px' }}>
+              No submissions yet — be the first to enter!
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 340, overflowY: 'auto' }}>
+              {subs.map((sub, idx) => (
+                <div key={sub.id} style={{
+                  display: 'flex', gap: 10, alignItems: 'center',
+                  background: idx === 0 && subs.length > 1 ? 'rgba(255,215,0,0.06)' : 'rgba(255,255,255,0.02)',
+                  border: idx === 0 && subs.length > 1 ? '1px solid rgba(255,215,0,0.2)' : '1px solid var(--border)',
+                  borderRadius: 'var(--radius)', padding: '10px 12px',
+                }}>
+                  <div style={{
+                    width: 28, textAlign: 'center', fontSize: idx < 3 ? 18 : 13,
+                    fontWeight: 700, color: 'var(--text-muted)', flexShrink: 0,
+                  }}>
+                    {idx < 3 ? medals[idx] : `#${idx + 1}`}
                   </div>
-                  <div style={{ fontSize: 13, color: 'var(--text-secondary)', wordBreak: 'break-all' }}>
-                    {sub.content.startsWith('http') ? (
-                      <a href={sub.content} target="_blank" rel="noreferrer" style={{ color: 'var(--accent-bright)' }}>
-                        🔗 {sub.content}
-                      </a>
-                    ) : sub.content}
+                  <Avatar user={sub} size={30} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+                      <span style={{ fontWeight: 600, fontSize: 12, color: 'var(--text-mid)' }}>{sub.name}</span>
+                      <TalentBadge talent={sub.primary_talent} />
+                    </div>
+                    <div style={{ fontSize: 12, color: 'var(--text-secondary)', wordBreak: 'break-all' }}>
+                      {sub.content.startsWith('http') ? (
+                        <a href={sub.content} target="_blank" rel="noreferrer" style={{ color: 'var(--accent-bright)' }}>
+                          🔗 {sub.content}
+                        </a>
+                      ) : sub.content}
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, flexShrink: 0 }}>
+                    <button
+                      className="btn btn-ghost btn-sm"
+                      onClick={() => handleVote(sub.id)}
+                      disabled={myVotes.has(sub.id) || sub.user_id === currentUserId || votingId === sub.id}
+                      style={{ fontSize: 15, padding: '3px 8px', color: myVotes.has(sub.id) ? 'var(--success)' : 'var(--text-muted)' }}
+                    >👍</button>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)' }}>{sub.vote_count}</span>
                   </div>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-                  <button
-                    className="btn btn-ghost btn-sm"
-                    onClick={() => handleVote(sub.id)}
-                    disabled={myVotes.has(sub.id) || sub.user_id === currentUserId || votingId === sub.id}
-                    style={{ fontSize: 16, padding: '4px 8px', color: myVotes.has(sub.id) ? 'var(--success)' : 'var(--text-muted)' }}
-                  >👍</button>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)' }}>{sub.vote_count}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -131,10 +154,9 @@ function ChallengeCard({ post, currentUserId, onLikeToggle, onSubmitted, onDelet
 
   const isExpired = post.deadline && new Date(post.deadline) < new Date();
 
-  // ── REP: fire winner check once when we first render an expired challenge ──
   React.useEffect(() => {
     if (isExpired) {
-      socialAPI.checkChallengeWinner(post.id).catch(() => { /* silent — idempotent */ });
+      socialAPI.checkChallengeWinner(post.id).catch(() => { /* silent */ });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [post.id, isExpired]);
@@ -161,84 +183,113 @@ function ChallengeCard({ post, currentUserId, onLikeToggle, onSubmitted, onDelet
     finally { setLiking(false); }
   };
 
-  return (
-    <div className="card" style={{ marginBottom: 16 }}>
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
-        <Avatar user={post.author} size={40} />
-        <div style={{ flex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--text-mid)' }}>{post.author?.name}</span>
-            <TalentBadge talent={post.author?.primary_talent} />
-          </div>
-          <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{formatTime(post.created_at)}</div>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
-          <span style={{
-            fontSize: 10, fontWeight: 700, padding: '3px 10px', borderRadius: 99,
-            background: 'rgba(255,215,0,0.1)', color: '#d4c070', border: '1px solid rgba(255,215,0,0.2)',
-            letterSpacing: '0.5px', textTransform: 'uppercase',
-          }}>⚔️ Challenge</span>
-          {isExpired && (
-            <span style={{ fontSize: 10, color: 'var(--danger)', fontWeight: 600 }}>Closed</span>
-          )}
-        </div>
-      </div>
+  let daysLeft = null;
+  if (post.deadline && !isExpired) {
+    const diff = new Date(post.deadline) - new Date();
+    daysLeft = Math.ceil(diff / (1000 * 60 * 60 * 24));
+  }
 
-      <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700, color: 'var(--text-mid)', marginBottom: 6 }}>
-        {post.title}
-      </h3>
-      {post.description && (
-        <p style={{ fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.65, marginBottom: 10 }}>
-          {post.description}
-        </p>
-      )}
-      {post.rules && (
-        <div style={{
-          background: 'rgba(255,215,0,0.04)', border: '1px solid rgba(255,215,0,0.12)',
-          borderRadius: 'var(--radius)', padding: '10px 14px', marginBottom: 10,
-        }}>
-          <div style={{ fontSize: 10, fontWeight: 700, color: '#d4c070', marginBottom: 4, letterSpacing: '0.8px' }}>RULES</div>
-          <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{post.rules}</div>
+  return (
+    <div className="card" style={{ marginBottom: 20, overflow: 'hidden', padding: 0 }}>
+
+      {/* Top banner */}
+      <div style={{
+        background: isExpired
+          ? 'linear-gradient(135deg, rgba(80,80,80,0.12), rgba(40,40,40,0.08))'
+          : 'linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,140,0,0.04))',
+        borderBottom: `1px solid ${isExpired ? 'var(--border)' : 'rgba(255,215,0,0.15)'}`,
+        padding: '12px 18px',
+        display: 'flex', alignItems: 'center', gap: 12,
+      }}>
+        <span style={{ fontSize: 22 }}>{isExpired ? '🏁' : '⚔️'}</span>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: isExpired ? 'var(--text-muted)' : '#d4c070' }}>
+            {isExpired ? 'Challenge Closed' : 'Active Challenge'}
+          </div>
+          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 1 }}>
+            📤 Submit via: <span style={{ color: 'var(--text-secondary)', textTransform: 'capitalize' }}>{post.submission_type}</span>
+          </div>
         </div>
-      )}
-      <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 12 }}>
-        {post.deadline && (
-          <span style={{ fontSize: 12, color: isExpired ? 'var(--danger)' : 'var(--text-secondary)' }}>
-            📅 {isExpired ? 'Closed' : 'Deadline'}: {new Date(post.deadline).toLocaleDateString()}
+        {!isExpired && daysLeft !== null && (
+          <div style={{
+            textAlign: 'center',
+            background: daysLeft <= 3 ? 'rgba(255,80,80,0.12)' : 'rgba(255,215,0,0.08)',
+            border: `1px solid ${daysLeft <= 3 ? 'rgba(255,80,80,0.25)' : 'rgba(255,215,0,0.2)'}`,
+            borderRadius: 'var(--radius)', padding: '6px 12px',
+          }}>
+            <div style={{ fontSize: 18, fontWeight: 800, color: daysLeft <= 3 ? 'var(--danger)' : '#d4c070', lineHeight: 1 }}>{daysLeft}</div>
+            <div style={{ fontSize: 9, color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.5px' }}>DAYS LEFT</div>
+          </div>
+        )}
+        {isExpired && (
+          <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--danger)', background: 'rgba(255,80,80,0.1)', border: '1px solid rgba(255,80,80,0.2)', padding: '4px 10px', borderRadius: 99 }}>
+            CLOSED
           </span>
         )}
-        <span style={{ fontSize: 12, color: 'var(--text-muted)', textTransform: 'capitalize' }}>
-          📤 Submit via: {post.submission_type}
-        </span>
       </div>
 
-      {/* Like + owner actions */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
-        <button className="btn btn-ghost btn-sm" onClick={handleLike} disabled={liking}
-          style={{ color: post.liked_by_me ? '#ff6b9d' : 'var(--text-muted)', gap: 5 }}>
-          {post.liked_by_me ? '❤️' : '🤍'} {post.like_count}
-        </button>
-        {post.user_id === currentUserId && (
-          <button
-            className="btn btn-danger btn-sm"
-            style={{ marginLeft: 'auto' }}
-            onClick={handleDelete}
-            disabled={deleting}
-          >
-            {deleting ? 'Removing…' : '🗑 Take Down'}
-          </button>
+      {/* Card body */}
+      <div style={{ padding: '16px 18px' }}>
+        {/* Author row */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+          <Avatar user={post.author} size={36} />
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontWeight: 700, fontSize: 13, color: 'var(--text-mid)' }}>{post.author?.name}</span>
+              <TalentBadge talent={post.author?.primary_talent} />
+            </div>
+            <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{formatTime(post.created_at)}</div>
+          </div>
+          {post.user_id === currentUserId && (
+            <button className="btn btn-danger btn-sm" style={{ marginLeft: 'auto', fontSize: 11 }}
+              onClick={handleDelete} disabled={deleting}>
+              {deleting ? 'Removing…' : '🗑 Take Down'}
+            </button>
+          )}
+        </div>
+
+        <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 19, fontWeight: 800, color: 'var(--text-mid)', marginBottom: 8, lineHeight: 1.3 }}>
+          {post.title}
+        </h3>
+
+        {post.description && (
+          <p style={{ fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.65, marginBottom: 12 }}>
+            {post.description}
+          </p>
         )}
-      </div>
 
-      {/* Submissions */}
-      <SubmissionsPanel
-        postId={post.id}
-        postUserId={post.user_id}
-        currentUserId={currentUserId}
-        iSubmitted={post.i_submitted}
-        onSubmitted={() => onSubmitted(post.id)}
-      />
+        {post.rules && (
+          <div style={{
+            background: 'rgba(255,215,0,0.04)', border: '1px solid rgba(255,215,0,0.12)',
+            borderRadius: 'var(--radius)', padding: '10px 14px', marginBottom: 14,
+            borderLeft: '3px solid rgba(255,215,0,0.35)',
+          }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: '#d4c070', marginBottom: 6, letterSpacing: '0.8px' }}>📋 RULES</div>
+            <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{post.rules}</div>
+          </div>
+        )}
+
+        {/* Footer */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingTop: 4 }}>
+          <button className="btn btn-ghost btn-sm" onClick={handleLike} disabled={liking}
+            style={{ color: post.liked_by_me ? '#ff6b9d' : 'var(--text-muted)', gap: 5 }}>
+            {post.liked_by_me ? '❤️' : '🤍'} {post.like_count}
+          </button>
+          {post.deadline && (
+            <span style={{ fontSize: 11, color: 'var(--text-muted)', marginLeft: 'auto' }}>
+              📅 {isExpired ? 'Closed' : 'Ends'} {new Date(post.deadline).toLocaleDateString()}
+            </span>
+          )}
+        </div>
+
+        <SubmissionsPanel
+          postId={post.id}
+          postUserId={post.user_id}
+          currentUserId={currentUserId}
+          iSubmitted={post.i_submitted}
+          onSubmitted={() => onSubmitted(post.id)}
+        />
+      </div>
     </div>
   );
 }
@@ -307,7 +358,7 @@ function CreateChallengeForm({ onCreated, onCancel }) {
       <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
         <button className="btn btn-ghost2 btn-sm" onClick={onCancel}>Cancel</button>
         <button className="btn btn-primary btn-sm" onClick={handleSubmit} disabled={submitting}>
-          {submitting ? 'Posting…' : 'Post Challenge'}
+          {submitting ? 'Posting…' : '⚔️ Post Challenge'}
         </button>
       </div>
     </div>
@@ -333,19 +384,37 @@ export default function ChallengesModule({ posts, currentUserId, onPostCreated, 
     onPostsUpdate(prev => prev.filter(p => p.id !== postId));
   };
 
+  const active = posts.filter(p => !p.deadline || new Date(p.deadline) >= new Date());
+  const closed = posts.filter(p => p.deadline && new Date(p.deadline) < new Date());
+
   return (
     <div>
-      <div className="section-header" style={{ marginBottom: 20 }}>
-        <h3 className="section-title">⚔️ Community Challenges</h3>
+      {/* Module header banner */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 14,
+        marginBottom: 24, padding: '16px 20px',
+        background: 'linear-gradient(135deg, rgba(255,215,0,0.06), rgba(255,140,0,0.03))',
+        border: '1px solid rgba(255,215,0,0.12)',
+        borderRadius: 'var(--radius-lg)',
+      }}>
+        <div style={{ fontSize: 32 }}>⚔️</div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 18, color: 'var(--text-mid)' }}>
+            Community Challenges
+          </div>
+          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+            {active.length} active · {closed.length} closed · Compete, submit, vote
+          </div>
+        </div>
         <button className="btn btn-primary btn-sm" onClick={() => setShowCreate(v => !v)}>
-          {showCreate ? '✕ Cancel' : '+ Post Challenge'}
+          {showCreate ? '✕ Cancel' : '+ New Challenge'}
         </button>
       </div>
 
       {showCreate && (
         <div className="card" style={{ marginBottom: 20 }}>
           <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 16, color: 'var(--text-mid)', marginBottom: 16 }}>
-            New Community Challenge
+            ⚔️ New Community Challenge
           </div>
           <CreateChallengeForm
             onCreated={(post) => { onPostCreated(post); setShowCreate(false); }}
@@ -356,21 +425,35 @@ export default function ChallengesModule({ posts, currentUserId, onPostCreated, 
 
       {posts.length === 0 && !showCreate && (
         <div className="empty-state">
-          <div className="empty-state-icon">⚔️</div>
-          <div className="empty-state-text">No challenges posted yet.<br />Start a hackathon or coding sprint!</div>
+          <div className="empty-state-icon">🏆</div>
+          <div className="empty-state-text">
+            No challenges yet.<br />
+            Start a hackathon, coding sprint, or design battle!
+          </div>
         </div>
       )}
 
-      {posts.map(post => (
-        <ChallengeCard
-          key={post.id}
-          post={post}
-          currentUserId={currentUserId}
-          onLikeToggle={handleLikeToggle}
-          onSubmitted={handleSubmitted}
-          onDeleted={handleDeleted}
-        />
+      {active.map(post => (
+        <ChallengeCard key={post.id} post={post} currentUserId={currentUserId}
+          onLikeToggle={handleLikeToggle} onSubmitted={handleSubmitted} onDeleted={handleDeleted} />
       ))}
+
+      {closed.length > 0 && (
+        <details style={{ marginTop: 8 }}>
+          <summary style={{
+            fontSize: 12, fontWeight: 600, color: 'var(--text-muted)',
+            cursor: 'pointer', padding: '8px 0', userSelect: 'none', letterSpacing: '0.5px',
+          }}>
+            🏁 {closed.length} Closed Challenge{closed.length !== 1 ? 's' : ''}
+          </summary>
+          <div style={{ marginTop: 12, opacity: 0.75 }}>
+            {closed.map(post => (
+              <ChallengeCard key={post.id} post={post} currentUserId={currentUserId}
+                onLikeToggle={handleLikeToggle} onSubmitted={handleSubmitted} onDeleted={handleDeleted} />
+            ))}
+          </div>
+        </details>
+      )}
     </div>
   );
 }

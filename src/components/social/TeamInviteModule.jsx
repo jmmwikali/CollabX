@@ -33,6 +33,8 @@ function TeamInviteCard({ post, onRequestSent, onDeleted }) {
   const isOwner = post.is_mine;
   const myStatus = post.my_request_status;
 
+  const isDeadlinePassed = post.deadline && new Date(post.deadline) < new Date();
+
   const handleDelete = async () => {
     if (!window.confirm('Are you sure you want to take down this post?')) return;
     setDeleting(true);
@@ -77,95 +79,134 @@ function TeamInviteCard({ post, onRequestSent, onDeleted }) {
 
   return (
     <>
-      <div className="card" style={{ marginBottom: 16 }}>
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
-          <Avatar user={post.author} size={40} />
+      <div className="card" style={{ marginBottom: 16, overflow: 'hidden', padding: 0 }}>
+
+        {/* Card header stripe */}
+        <div style={{
+          padding: '10px 18px',
+          background: 'rgba(0,184,204,0.06)',
+          borderBottom: '1px solid rgba(0,184,204,0.12)',
+          display: 'flex', alignItems: 'center', gap: 10,
+        }}>
+          <span style={{ fontSize: 16 }}>🧑‍🤝‍🧑</span>
           <div style={{ flex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--text-mid)' }}>{post.author?.name}</span>
-              <TalentBadge talent={post.author?.primary_talent} />
+            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--accent2)' }}>
+              Team Invitation
+            </span>
+            {post.team_name && (
+              <span style={{ fontSize: 11, color: 'var(--text-muted)', marginLeft: 8 }}>
+                · {post.team_name}
+              </span>
+            )}
+          </div>
+          {isOwner && post.request_count > 0 && (
+            <span style={{
+              fontSize: 11, fontWeight: 700,
+              background: 'rgba(157,217,253,0.12)', color: 'var(--accent)',
+              border: '1px solid rgba(157,217,253,0.2)',
+              borderRadius: 99, padding: '2px 10px',
+            }}>
+              {post.request_count} applicant{post.request_count !== 1 ? 's' : ''}
+            </span>
+          )}
+          {isDeadlinePassed && (
+            <span style={{ fontSize: 10, color: 'var(--danger)', fontWeight: 700 }}>Closed</span>
+          )}
+        </div>
+
+        <div style={{ padding: '16px 18px' }}>
+          {/* Author */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+            <Avatar user={post.author} size={36} />
+            <div style={{ flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontWeight: 700, fontSize: 13, color: 'var(--text-mid)' }}>{post.author?.name}</span>
+                <TalentBadge talent={post.author?.primary_talent} />
+              </div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{formatTime(post.created_at)}</div>
             </div>
-            <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{formatTime(post.created_at)}</div>
           </div>
-          <span style={{
-            fontSize: 10, fontWeight: 700, padding: '3px 10px', borderRadius: 99,
-            background: 'rgba(0,184,204,0.12)', color: 'var(--accent2)', border: '1px solid rgba(0,184,204,0.2)',
-            letterSpacing: '0.5px', textTransform: 'uppercase',
-          }}>Team Invite</span>
-        </div>
 
-        {/* Team name */}
-        <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4, fontWeight: 600, letterSpacing: '0.8px', textTransform: 'uppercase' }}>
-          🏷 {post.team_name}
-        </div>
+          {/* Title + description */}
+          <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700, color: 'var(--text-mid)', marginBottom: 6 }}>
+            {post.title}
+          </h3>
+          {post.description && (
+            <p style={{ fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.65, marginBottom: 14 }}>
+              {post.description}
+            </p>
+          )}
 
-        {/* Title + description */}
-        <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700, color: 'var(--text-mid)', marginBottom: 6 }}>
-          {post.title}
-        </h3>
-        {post.description && (
-          <p style={{ fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.65, marginBottom: 12 }}>
-            {post.description}
-          </p>
-        )}
+          {/* Skills + Roles side by side */}
+          {(post.skills_required?.length > 0 || post.roles_needed?.length > 0) && (
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 14 }}>
+              {post.skills_required?.length > 0 && (
+                <div style={{
+                  background: 'rgba(157,217,253,0.05)', borderRadius: 'var(--radius)',
+                  padding: '10px 12px', border: '1px solid rgba(157,217,253,0.1)',
+                }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--accent)', marginBottom: 6, letterSpacing: '0.8px' }}>SKILLS NEEDED</div>
+                  <div>{post.skills_required.map(s => <TagPill key={s} label={s} />)}</div>
+                </div>
+              )}
+              {post.roles_needed?.length > 0 && (
+                <div style={{
+                  background: 'rgba(0,184,204,0.05)', borderRadius: 'var(--radius)',
+                  padding: '10px 12px', border: '1px solid rgba(0,184,204,0.1)',
+                }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--accent2)', marginBottom: 6, letterSpacing: '0.8px' }}>ROLES</div>
+                  <div>{post.roles_needed.map(r => <TagPill key={r} label={r} />)}</div>
+                </div>
+              )}
+            </div>
+          )}
 
-        {/* Tag groups */}
-        {post.skills_required?.length > 0 && (
-          <div style={{ marginBottom: 8 }}>
-            <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600, marginBottom: 4 }}>SKILLS NEEDED</div>
-            <div>{post.skills_required.map(s => <TagPill key={s} label={s} />)}</div>
+          {/* Meta pills row */}
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
+            {post.commitment_level && (
+              <span style={{
+                fontSize: 11, color: 'var(--text-secondary)', fontWeight: 500,
+                background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)',
+                borderRadius: 99, padding: '3px 10px',
+              }}>
+                ⏱ {post.commitment_level.replace('_', ' ')}
+              </span>
+            )}
+            {post.deadline && (
+              <span style={{
+                fontSize: 11, color: isDeadlinePassed ? 'var(--danger)' : 'var(--text-secondary)', fontWeight: 500,
+                background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)',
+                borderRadius: 99, padding: '3px 10px',
+              }}>
+                📅 {isDeadlinePassed ? 'Closed' : `Deadline: ${new Date(post.deadline).toLocaleDateString()}`}
+              </span>
+            )}
           </div>
-        )}
-        {post.roles_needed?.length > 0 && (
-          <div style={{ marginBottom: 8 }}>
-            <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600, marginBottom: 4 }}>ROLES</div>
-            <div>{post.roles_needed.map(r => <TagPill key={r} label={r} />)}</div>
+
+          {/* Actions */}
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', paddingTop: 4, borderTop: '1px solid var(--border)' }}>
+            {!isOwner && !myStatus && (
+              <button className="btn btn-primary btn-sm" onClick={() => setShowRequest(true)}>
+                🤝 Request to Join
+              </button>
+            )}
+            {!isOwner && myStatus === 'pending' && (
+              <span style={{ fontSize: 12, color: 'var(--text-muted)', padding: '6px 0' }}>⏳ Application pending…</span>
+            )}
+            {!isOwner && myStatus === 'accepted' && (
+              <span style={{ fontSize: 12, color: 'var(--success)', padding: '6px 0', fontWeight: 700 }}>✓ Accepted</span>
+            )}
+            {isOwner && (
+              <button className="btn btn-secondary btn-sm" onClick={loadRequests} disabled={reqLoading}>
+                {reqLoading ? 'Loading…' : `👥 Review Applicants (${post.request_count})`}
+              </button>
+            )}
+            {isOwner && (
+              <button className="btn btn-danger btn-sm" style={{ marginLeft: 'auto' }} onClick={handleDelete} disabled={deleting}>
+                {deleting ? 'Removing…' : '🗑 Take Down'}
+              </button>
+            )}
           </div>
-        )}
-
-        {/* Meta row */}
-        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 8, marginBottom: 14 }}>
-          {post.commitment_level && (
-            <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
-              ⏱ {post.commitment_level.replace('_', ' ')}
-            </span>
-          )}
-          {post.deadline && (
-            <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
-              📅 Deadline: {new Date(post.deadline).toLocaleDateString()}
-            </span>
-          )}
-          {isOwner && (
-            <span style={{ fontSize: 12, color: 'var(--accent-bright)' }}>
-              📥 {post.request_count} request{post.request_count !== 1 ? 's' : ''}
-            </span>
-          )}
-        </div>
-
-        {/* Actions */}
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          {!isOwner && !myStatus && (
-            <button className="btn btn-primary btn-sm" onClick={() => setShowRequest(true)}>
-              🤝 Request Invite
-            </button>
-          )}
-          {!isOwner && myStatus === 'pending' && (
-            <span style={{ fontSize: 12, color: 'var(--text-muted)', padding: '6px 0' }}>⏳ Request pending…</span>
-          )}
-          {!isOwner && myStatus === 'accepted' && (
-            <span style={{ fontSize: 12, color: 'var(--success)', padding: '6px 0' }}>✓ Accepted</span>
-          )}
-          {isOwner && (
-            <button className="btn btn-secondary btn-sm" onClick={loadRequests} disabled={reqLoading}>
-              {reqLoading ? 'Loading…' : `👥 View Requests (${post.request_count})`}
-            </button>
-          )}
-          {isOwner && (
-            <button className="btn btn-danger btn-sm" style={{ marginLeft: 'auto' }} onClick={handleDelete} disabled={deleting}>
-              {deleting ? 'Removing…' : '🗑 Take Down'}
-            </button>
-          )}
         </div>
       </div>
 
@@ -204,7 +245,7 @@ function TeamInviteCard({ post, onRequestSent, onDeleted }) {
       </Modal>
 
       {/* Owner: View Requests Modal */}
-      <Modal isOpen={showRequests} onClose={() => setShowRequests(false)} title={`Join Requests (${requests.length})`}>
+      <Modal isOpen={showRequests} onClose={() => setShowRequests(false)} title={`Applicants (${requests.length})`}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxHeight: 400, overflowY: 'auto' }}>
           {requests.length === 0 && (
             <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: 20 }}>No pending requests.</div>
@@ -312,23 +353,22 @@ function CreateTeamInviteForm({ onCreated, onCancel }) {
             onChange={e => setForm(f => ({ ...f, commitment_level: e.target.value }))}>
             <option value="">Select…</option>
             <option value="part_time">Part-time</option>
+            <option value="full_time">Full-time</option>
             <option value="weekends">Weekends only</option>
             <option value="flexible">Flexible</option>
           </select>
         </div>
-
-        <div className="form-group">
-          <label className="form-label">Application deadline (optional)</label>
-          <input type="date" className="form-input date" value={form.deadline}
-            onChange={e => setForm(f => ({ ...f, deadline: e.target.value }))} />
-        </div>
       </div>
-      
+      <div className="form-group">
+        <label className="form-label">Application deadline (optional)</label>
+        <input type="date" className="form-input" value={form.deadline}
+          onChange={e => setForm(f => ({ ...f, deadline: e.target.value }))} />
+      </div>
       {error && <div className="alert alert-error">{error}</div>}
       <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
         <button className="btn btn-ghost2 btn-sm" onClick={onCancel}>Cancel</button>
         <button className="btn btn-primary btn-sm" onClick={handleSubmit} disabled={submitting}>
-          {submitting ? 'Posting…' : 'Post Invitation'}
+          {submitting ? 'Posting…' : '🧑‍🤝‍🧑 Post Invitation'}
         </button>
       </div>
     </div>
@@ -351,8 +391,23 @@ export default function TeamInviteModule({ posts, onPostCreated, onPostsUpdate }
 
   return (
     <div>
-      <div className="section-header" style={{ marginBottom: 20 }}>
-        <h3 className="section-title">🧑‍🤝‍🧑 Team Invitations</h3>
+      {/* Module header */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 14,
+        marginBottom: 24, padding: '16px 20px',
+        background: 'rgba(0,184,204,0.05)',
+        border: '1px solid rgba(0,184,204,0.12)',
+        borderRadius: 'var(--radius-lg)',
+      }}>
+        <div style={{ fontSize: 32 }}>🧑‍🤝‍🧑</div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 18, color: 'var(--text-mid)' }}>
+            Team Invitations
+          </div>
+          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+            {posts.length} open position{posts.length !== 1 ? 's' : ''} · Find your next collaborator
+          </div>
+        </div>
         <button className="btn btn-primary btn-sm" onClick={() => setShowCreate(v => !v)}>
           {showCreate ? '✕ Cancel' : '+ Post Invitation'}
         </button>
@@ -361,7 +416,7 @@ export default function TeamInviteModule({ posts, onPostCreated, onPostsUpdate }
       {showCreate && (
         <div className="card" style={{ marginBottom: 20 }}>
           <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 16, color: 'var(--text-mid)', marginBottom: 16 }}>
-            New Team Invitation
+            🧑‍🤝‍🧑 New Team Invitation
           </div>
           <CreateTeamInviteForm
             onCreated={(post) => { onPostCreated(post); setShowCreate(false); }}
