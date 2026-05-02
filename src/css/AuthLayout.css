@@ -1,12 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
 
 :root {
-  --bright: #B9E2FF;
-  --bright-mid: #8ecfee;
+  --bg: linear-gradient(135deg, #070B14 0%, #0A1020 60%, #050914 100%);
+  --bright: #a5c9e3;
+  --bright-mid: #7eb3cc;
   --bright-deep: #4a9fc2;
-  --dark: #0d2d44;
-  --dark-mid: #163c55;
-  --dark-card: #1a4060;
+  --dark: linear-gradient(135deg,  rgba(18, 35, 69, 0.85) 0%,rgba(25, 52, 102, 0.75) 45%,rgba(8, 15, 32, 0.65) 100%);
+  --dark-mid: linear-gradient(135deg,  rgba(18, 35, 69, 0.85) 0%,rgba(25, 52, 102, 0.75) 45%,rgba(8, 15, 32, 0.65) 100%);
+  --dark-card: linear-gradient(135deg,  rgba(18, 35, 69, 0.85) 0%,rgba(25, 52, 102, 0.75) 45%,rgba(8, 15, 32, 0.65) 100%);
   --input-border: rgba(185,226,255,0.25);
   --input-bg: rgba(255,255,255,0.07);
   --text-light: #e8f6ff;
@@ -25,7 +26,7 @@
 /* ── Outer page ── */
 .auth-page {
   min-height: 100vh;
-  background: var(--dark);
+  background: var(--bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -62,7 +63,7 @@
   left: 0;
   background:
     radial-gradient(ellipse at 30% 20%, rgba(91,191,238,0.08) 0%, transparent 60%),
-    linear-gradient(160deg, var(--dark-mid) 0%, var(--dark) 100%);
+    linear-gradient(135deg,  rgba(18, 35, 69, 0.85) 0%,rgba(25, 52, 102, 0.75) 45%,rgba(8, 15, 32, 0.65) 100%);
   z-index: 2;
 }
 .auth-container.active .panel-dark {
@@ -239,7 +240,7 @@
 .auth-input:focus,
 .auth-select:focus,
 .auth-textarea:focus {
-  border-color: var(--accent);
+  border-color: var(--blue);
   background: rgba(91,191,238,0.1);
   box-shadow: 0 0 0 3px rgba(91,191,238,0.15);
 }
@@ -380,7 +381,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: var(--dark);
+  background: var(--slate-700);
   color: var(--text-light);
   border: none;
   border-radius: 10px;
@@ -421,22 +422,6 @@
   flex-shrink: 0;
 }
 
-/* ══ DECORATIVE CIRCLES ══ */
-.deco-circle {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-.deco-1 {
-  width: 220px; height: 220px;
-  background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%);
-  bottom: -60px; right: -60px;
-}
-.deco-2 {
-  width: 100px; height: 100px;
-  background: radial-gradient(circle, rgba(13,45,68,0.08) 0%, transparent 70%);
-  top: 30px; left: -20px;
-}
 
 /* ══ SCROLLABLE REGISTER FORM ══ */
 .register-scroll {

@@ -185,7 +185,7 @@ function TeamInviteCard({ post, onRequestSent, onDeleted }) {
 
           {/* Actions */}
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', paddingTop: 4, borderTop: '1px solid var(--border)' }}>
-            {!isOwner && !myStatus && (
+            {!isOwner && !myStatus && !isDeadlinePassed && (
               <button className="btn btn-primary btn-sm" onClick={() => setShowRequest(true)}>
                 🤝 Request to Join
               </button>

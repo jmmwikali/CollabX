@@ -101,7 +101,7 @@ export default function AuthLayout() {
                   value={loginForm.password} onChange={handleLoginChange} required />
               </div>
 
-              <button className="btn-main btn-primary-dark" type="submit" disabled={loginLoading} style={{ marginTop: 8 }}>
+              <button className="btn-main btn-primary" type="submit" disabled={loginLoading} style={{ marginTop: 8 }}>
                 {loginLoading ? 'Signing in…' : 'Sign In →'}
               </button>
             </form>
@@ -182,7 +182,7 @@ export default function AuthLayout() {
                     value={regForm.bio} onChange={handleRegChange} />
                 </div>
 
-                <button className="btn-main btn-primary-dark" type="submit" disabled={regLoading} style={{ marginTop: 4 }}>
+                <button className="btn-main btn-primary" type="submit" disabled={regLoading} style={{ marginTop: 4 }}>
                   {regLoading ? 'Creating account…' : 'Create Account →'}
                 </button>
               </form>
@@ -205,9 +205,6 @@ export default function AuthLayout() {
 
           {/* Login welcome */}
           <div className="panel-inner welcome-inner welcome-login">
-            <div className="deco-circle deco-1" />
-            <div className="deco-circle deco-2" />
-
             <div className="welcome-badge">✦ Already a member?</div>
             <h2 className="welcome-heading">
               Good to have<br /><em>you back.</em>
@@ -227,9 +224,6 @@ export default function AuthLayout() {
 
           {/* Register welcome */}
           <div className="panel-inner welcome-inner welcome-register">
-            <div className="deco-circle deco-1" />
-            <div className="deco-circle deco-2" />
-
             <div className="welcome-badge">✦ CollabX Platform</div>
             <h2 className="welcome-heading">
               Build together,<br /><em>ship faster.</em>

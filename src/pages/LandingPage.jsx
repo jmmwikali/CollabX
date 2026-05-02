@@ -312,12 +312,12 @@ export default function LandingPage() {
       <section className="dash-section reveal">
         <div className="dash-text">
           <div className="section-eyebrow light">Your workspace</div>
-          <h2 className="section-title light">
+          <h2 className="section-title light" style={{fontSize: 40}}>
             One dashboard. <br />
-            <span className="accent-grad">Every collaboration.</span>
+            <span className="accent-grad">Total Control.</span>
           </h2>
           <p className="section-sub light">
-            Track teams, messages, reputation and suggested talent — all in a single, focused view.
+            Track teams, messages, reputation and suggested talent — all from a single, streamlined workspace.
           </p>
         </div>
 
@@ -415,7 +415,7 @@ export default function LandingPage() {
             <Link to="/register" className="btn btn-primary btn-lg cta-primary">
               Create Free Account →
             </Link>
-            <Link to="/login" className="btn btn-ghost2 cta-secondary">
+            <Link to="/login" className="btn btn-account cta-secondary">
               I already have an account
             </Link>
           </div>

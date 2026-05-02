@@ -9,14 +9,19 @@ export default function DashboardPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [invitations, setInvitations] = useState([]);
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     Promise.all([
       dashboardAPI.getDashboard(),
       teamsAPI.getMyInvitations(),
-    ]).then(([dashRes, invRes]) => {
+      dashboardAPI.getNotifications(),
+    ]).then(([dashRes, invRes, notifRes]) => {
       setData(dashRes.data.dashboard);
       setInvitations(invRes.data.invitations || []);
+      setNotifications(notifRes.data.notifications || []);
+      // Mark all as read now that they're visible
+      dashboardAPI.markNotificationsRead().catch(() => {});
     }).catch(console.error)
       .finally(() => setLoading(false));
   }, []);
@@ -35,17 +40,14 @@ export default function DashboardPage() {
   const handleClearNotification = async (id) => {
     try {
       await dashboardAPI.deleteNotification(id);
-      setData(prev => ({
-        ...prev,
-        notifications: prev.notifications.filter(n => n.id !== id),
-      }));
+      setNotifications(prev => prev.filter(n => n.id !== id));
     } catch (err) { console.error(err); }
   };
 
   const handleClearAllNotifications = async () => {
     try {
       await dashboardAPI.clearAllNotifications();
-      setData(prev => ({ ...prev, notifications: [] }));
+      setNotifications([]);
     } catch (err) { console.error(err); }
   };
 
@@ -162,17 +164,16 @@ export default function DashboardPage() {
                 <button className="btn btn-sm btn-ghost" style={{verticalAlign: 'middle'}} onClick={handleClearAllNotifications}>Clear All</button>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {(data?.notifications || []).slice(0, 5).map(n => (
+              {notifications.slice(0, 5).map(n => (
                 <div key={n.id} className="card card-sm" style={{
-                    opacity: n.is_read ? 0.6 : 1,
-                    borderLeft: n.is_read ? 'none' : '2px solid var(--accent)',
+                    borderLeft: '2px solid var(--accent)',
                     padding: '12px 14px',
                     display: 'flex', 
                     alignItems: 'center',  
                   }}>
-                    <div style={{ flex: 1 }}>
+                    <div style={{ flex: 1, marginRight: 20 }}>
                       <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--text-mid)' }}>{n.title}</div>
-                      {n.body && <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>{n.body.length > 70 ? `${n.body.slice(0, 70)}...` : n.body}</div>}
+                      {n.body && <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>{n.body.length > 70 ? `${n.body}...` : n.body}</div>}
                     </div>
 
                     <div>
@@ -185,7 +186,7 @@ export default function DashboardPage() {
                   
                 </div>
               ))}
-              {(!data?.notifications || data.notifications.length === 0) && (
+              {notifications.length === 0 && (
                 <div style={{ color: 'var(--text-seconday)', fontSize: 13, textAlign: 'center', padding: '20px 0' }}>
                   All caught up! 
                 </div>
