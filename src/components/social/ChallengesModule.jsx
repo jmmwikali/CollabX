@@ -415,7 +415,7 @@ export default function ChallengesModule({ posts, currentUserId, onPostCreated, 
           </div>
         </div>
         <button className="btn btn-primary btn-sm" onClick={() => setShowCreate(v => !v)}>
-          {showCreate ? '✕ Cancel' : '+ New Challenge'}
+          {showCreate ? '✕ Cancel' : '+ Challenge'}
         </button>
       </div>
 
