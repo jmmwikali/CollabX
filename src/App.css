@@ -1796,23 +1796,34 @@ body {
      CHALLENGES MODULE
   ──────────────────────────────────────────────────────────────── */
 
-  /* Challenge card top banner: shrink the "days left" badge */
+  /* Banner: reduce padding, keep flex row but let it breathe */
   .challenge-banner {
-    padding: 10px 14px !important;
-    gap: 10px !important;
+    padding: 10px 12px !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
   }
+
+  /* Days-left badge: shrink so it never overflows narrow screens */
   .challenge-days-badge {
     padding: 4px 8px !important;
+    min-width: 46px !important;
+    flex-shrink: 0 !important;
   }
-  .challenge-days-badge div:first-child {
+  .challenge-days-number {
     font-size: 15px !important;
   }
 
-  /* Challenge card body */
-  .challenge-body {
-    padding: 14px !important;
+  /* "Submit via" line: hide on very tight screens if needed */
+  .challenge-submit-via {
+    font-size: 10px !important;
   }
-  .challenge-body h3 {
+
+  /* Card body */
+  .challenge-body {
+    padding: 12px 14px !important;
+  }
+  .challenge-title {
     font-size: 16px !important;
   }
 
@@ -1822,11 +1833,12 @@ body {
     gap: 10px !important;
   }
 
-  /* Submission panel: leaderboard header stacks button and "Submit Entry" */
+  /* Submission panel header: stack leaderboard toggle + submit button vertically */
   .challenge-submission-header {
     flex-direction: column !important;
     align-items: stretch !important;
     gap: 8px !important;
+    padding: 10px 12px !important;
   }
   .challenge-submission-header .btn {
     width: 100% !important;
@@ -1834,28 +1846,29 @@ body {
     margin-left: 0 !important;
   }
 
-  /* Submission entry form: input + button stack */
+  /* Submit entry row: input stacks above button */
   .challenge-submit-row {
     flex-direction: column !important;
     gap: 8px !important;
   }
-  .challenge-submit-row input,
+  .challenge-submit-row input {
+    width: 100% !important;
+    flex: unset !important;
+  }
   .challenge-submit-row .btn {
     width: 100% !important;
+    justify-content: center !important;
   }
 
-  /* Leaderboard entries: tighten layout */
-  .challenge-leaderboard-entry {
-    padding: 8px 10px !important;
-    gap: 8px !important;
-  }
-
-  /* Footer: like button + date — keep on one line but allow wrap */
+  /* Footer like + date row: wrap so date doesn't overflow */
   .challenge-footer {
     flex-wrap: wrap !important;
-    gap: 8px !important;
+    gap: 6px !important;
   }
-
+  .challenge-footer span {
+    margin-left: 0 !important;
+    font-size: 10.5px !important;
+  }
   /* ────────────────────────────────────────────────────────────────
      POLLS MODULE
   ──────────────────────────────────────────────────────────────── */

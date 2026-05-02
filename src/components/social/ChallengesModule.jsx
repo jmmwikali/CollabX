@@ -51,24 +51,26 @@ function SubmissionsPanel({ postId, postUserId, currentUserId, iSubmitted, isExp
 
   return (
     <div style={{ marginTop: 16 }}>
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: 10,
-        padding: '10px 14px',
-        background: 'rgba(255,215,0,0.04)',
-        border: '1px solid rgba(255,215,0,0.12)',
-        borderRadius: 'var(--radius)',
-      }}>
+      <div
+        className="challenge-submission-header"
+        style={{
+          display: 'flex', alignItems: 'center', gap: 10,
+          padding: '10px 14px',
+          background: 'rgba(255,215,0,0.04)',
+          border: '1px solid rgba(255,215,0,0.12)',
+          borderRadius: 'var(--radius)',
+        }}>
         <button className="btn btn-ghost2 btn-sm" onClick={load} style={{ fontSize: 12, gap: 6 }}>
           🏆 {open ? 'Hide' : 'View'} Leaderboard ({loaded ? subs.length : '…'} entries)
         </button>
         {!isExpired && !iSubmitted && currentUserId !== postUserId && (
-          <button className="btn btn-primary btn-sm" style={{ marginLeft: 'auto', fontSize: 12 }}
+          <button className="btn btn-primary btn-sm" style={{ fontSize: 12 }}
             onClick={() => { setOpen(true); setLoaded(true); }}>
             + Submit Entry
           </button>
         )}
         {iSubmitted && (
-          <span style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--success)', fontWeight: 700 }}>
+          <span style={{ fontSize: 12, color: 'var(--success)', fontWeight: 700 }}>
             ✓ Entry Submitted
           </span>
         )}
@@ -84,7 +86,7 @@ function SubmissionsPanel({ postId, postUserId, currentUserId, iSubmitted, isExp
               borderRadius: 'var(--radius)',
             }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: '#d4c070', marginBottom: 8, letterSpacing: '0.8px' }}>YOUR SUBMISSION</div>
-              <div style={{ display: 'flex', gap: 8 }}>
+              <div className="challenge-submit-row" style={{ display: 'flex', gap: 8 }}>
                 <input className="form-input" placeholder="Paste your submission link or write your entry…"
                   value={submitForm} onChange={e => setSubmitForm(e.target.value)}
                   style={{ flex: 1, fontSize: 13 }} />
@@ -193,62 +195,67 @@ function ChallengeCard({ post, currentUserId, onLikeToggle, onSubmitted, onDelet
     <div className="card" style={{ marginBottom: 20, overflow: 'hidden', padding: 0 }}>
 
       {/* Top banner */}
-      <div style={{
-        background: isExpired
-          ? 'linear-gradient(135deg, rgba(80,80,80,0.12), rgba(40,40,40,0.08))'
-          : 'linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,140,0,0.04))',
-        borderBottom: `1px solid ${isExpired ? 'var(--border)' : 'rgba(255,215,0,0.15)'}`,
-        padding: '12px 18px',
-        display: 'flex', alignItems: 'center', gap: 12,
-      }}>
+      <div
+        className="challenge-banner"
+        style={{
+          background: isExpired
+            ? 'linear-gradient(135deg, rgba(80,80,80,0.12), rgba(40,40,40,0.08))'
+            : 'linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,140,0,0.04))',
+          borderBottom: `1px solid ${isExpired ? 'var(--border)' : 'rgba(255,215,0,0.15)'}`,
+          padding: '12px 18px',
+          display: 'flex', alignItems: 'center', gap: 12,
+        }}>
         <span style={{ fontSize: 22 }}>{isExpired ? '🏁' : '⚔️'}</span>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: isExpired ? 'var(--text-muted)' : '#d4c070' }}>
             {isExpired ? 'Challenge Closed' : 'Active Challenge'}
           </div>
-          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 1 }}>
+          <div className="challenge-submit-via" style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 1 }}>
             📤 Submit via: <span style={{ color: 'var(--text-secondary)', textTransform: 'capitalize' }}>{post.submission_type}</span>
           </div>
         </div>
         {!isExpired && daysLeft !== null && (
-          <div style={{
-            textAlign: 'center',
-            background: daysLeft <= 3 ? 'rgba(255,80,80,0.12)' : 'rgba(255,215,0,0.08)',
-            border: `1px solid ${daysLeft <= 3 ? 'rgba(255,80,80,0.25)' : 'rgba(255,215,0,0.2)'}`,
-            borderRadius: 'var(--radius)', padding: '6px 12px',
-          }}>
-            <div style={{ fontSize: 18, fontWeight: 800, color: daysLeft <= 3 ? 'var(--danger)' : '#d4c070', lineHeight: 1 }}>{daysLeft}</div>
+          <div
+            className="challenge-days-badge"
+            style={{
+              textAlign: 'center',
+              background: daysLeft <= 3 ? 'rgba(255,80,80,0.12)' : 'rgba(255,215,0,0.08)',
+              border: `1px solid ${daysLeft <= 3 ? 'rgba(255,80,80,0.25)' : 'rgba(255,215,0,0.2)'}`,
+              borderRadius: 'var(--radius)', padding: '6px 12px',
+              flexShrink: 0,
+            }}>
+            <div className="challenge-days-number" style={{ fontSize: 18, fontWeight: 800, color: daysLeft <= 3 ? 'var(--danger)' : '#d4c070', lineHeight: 1 }}>{daysLeft}</div>
             <div style={{ fontSize: 9, color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.5px' }}>DAYS LEFT</div>
           </div>
         )}
         {isExpired && (
-          <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--danger)', background: 'rgba(255,80,80,0.1)', border: '1px solid rgba(255,80,80,0.2)', padding: '4px 10px', borderRadius: 99 }}>
+          <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--danger)', background: 'rgba(255,80,80,0.1)', border: '1px solid rgba(255,80,80,0.2)', padding: '4px 10px', borderRadius: 99, flexShrink: 0 }}>
             CLOSED
           </span>
         )}
       </div>
 
       {/* Card body */}
-      <div style={{ padding: '16px 18px' }}>
+      <div className="challenge-body" style={{ padding: '16px 18px' }}>
         {/* Author row */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
           <Avatar user={post.author} size={36} />
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
               <span style={{ fontWeight: 700, fontSize: 13, color: 'var(--text-mid)' }}>{post.author?.name}</span>
               <TalentBadge talent={post.author?.primary_talent} />
             </div>
             <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{formatTime(post.created_at)}</div>
           </div>
           {post.user_id === currentUserId && (
-            <button className="btn btn-danger btn-sm" style={{ marginLeft: 'auto', fontSize: 11 }}
+            <button className="btn btn-danger btn-sm" style={{ marginLeft: 'auto', fontSize: 11, flexShrink: 0 }}
               onClick={handleDelete} disabled={deleting}>
               {deleting ? 'Removing…' : '🗑 Take Down'}
             </button>
           )}
         </div>
 
-        <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 19, fontWeight: 800, color: 'var(--text-mid)', marginBottom: 8, lineHeight: 1.3 }}>
+        <h3 className="challenge-title" style={{ fontFamily: 'var(--font-display)', fontSize: 19, fontWeight: 800, color: 'var(--text-mid)', marginBottom: 8, lineHeight: 1.3 }}>
           {post.title}
         </h3>
 
@@ -270,7 +277,7 @@ function ChallengeCard({ post, currentUserId, onLikeToggle, onSubmitted, onDelet
         )}
 
         {/* Footer */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingTop: 4 }}>
+        <div className="challenge-footer" style={{ display: 'flex', alignItems: 'center', gap: 10, paddingTop: 4 }}>
           <button className="btn btn-ghost btn-sm" onClick={handleLike} disabled={liking}
             style={{ color: post.liked_by_me ? '#ff6b9d' : 'var(--text-muted)', gap: 5 }}>
             {post.liked_by_me ? '❤️' : '🤍'} {post.like_count}
@@ -340,7 +347,7 @@ function CreateChallengeForm({ onCreated, onCancel }) {
           value={form.rules} onChange={e => setForm(f => ({ ...f, rules: e.target.value }))}
           style={{ minHeight: 70 }} />
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+      <div className="challenge-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
         <div className="form-group">
           <label className="form-label">Deadline (optional)</label>
           <input type="date" className="form-input" value={form.deadline}
