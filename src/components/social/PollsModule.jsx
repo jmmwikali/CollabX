@@ -322,9 +322,6 @@ function ImageUploadArea({ images, onImagesChange }) {
     <div className="form-group">
       <label className="form-label">
         Images (optional · max {MAX_IMAGES})
-        <span style={{ fontWeight: 400, color: 'var(--text-muted)', marginLeft: 6 }}>
-          Displayed above the poll question
-        </span>
       </label>
 
       {/* Previews */}
