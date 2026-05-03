@@ -10,8 +10,16 @@ export const socialAPI = {
   /** Get feed. Pass { type, limit, offset } as params. */
   getFeed: (params) => api.get('/social/', { params }),
 
-  /** Create a new social post. */
-  createPost: (data) => api.post('/social/', data),
+  /**
+   * Create a new social post. */
+  createPost: (data) => {
+    if (data instanceof FormData) {
+      return api.post('/social/', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+    }
+    return api.post('/social/', data);
+  },
 
   /** Delete own post. */
   deletePost: (postId) => api.delete(`/social/${postId}`),

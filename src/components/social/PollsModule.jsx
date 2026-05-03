@@ -1,6 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Avatar, TalentBadge, formatTime } from '../Layout';
 import { socialAPI } from '../../services/socialAPI';
+
+const _API_URL = process.env.REACT_APP_API_URL || 'https://ndambuki.alwaysdata.net/api';
+const STATIC_BASE = _API_URL.replace(/\/api$/, '');
+
+function resolveMediaUrl(src) {
+  if (!src) return src;
+  if (src.startsWith('http://') || src.startsWith('https://')) return src;
+  return `${STATIC_BASE}${src}`;
+}
+
+/* ─── Poll images display ─── */
+function PollImages({ images }) {
+  if (!images || images.length === 0) return null;
+
+  const count = images.length;
+  return (
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: count === 1 ? '1fr' : `repeat(${count}, 1fr)`,
+      gap: 2,
+      borderRadius: 'var(--radius) var(--radius) 0 0',
+      overflow: 'hidden',
+      maxHeight: count === 1 ? 350 : 200,
+    }}>
+      {images.map((src, i) => (
+        <div key={i} style={{ position: 'relative', overflow: 'hidden' }}>
+          <img
+            src={resolveMediaUrl(src)}
+            alt={`Poll image ${i + 1}`}
+            style={{
+              width: '100%',
+              height: count === 1 ? 350 : 200,
+              objectFit: 'cover',
+              display: 'block',
+              transition: 'transform 0.3s ease',
+            }}
+            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
+            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
 
 /* ─── Vote percentage bar ─── */
 function VoteBar({ label, count, total, selected }) {
@@ -44,6 +88,14 @@ function PollCard({ post, onVoted, onDeleted }) {
   const hasVoted = myVotes.length > 0;
   const isMulti = post.poll_multi;
   const options = post.poll_options || [];
+
+  // Parse image_urls — may be a JSON string or already an array
+  let images = [];
+  if (post.image_urls) {
+    images = typeof post.image_urls === 'string'
+      ? (() => { try { return JSON.parse(post.image_urls); } catch { return []; } })()
+      : post.image_urls;
+  }
 
   const handleDelete = async () => {
     if (!window.confirm('Are you sure you want to take down this poll?')) return;
@@ -92,11 +144,15 @@ function PollCard({ post, onVoted, onDeleted }) {
   return (
     <div className="card" style={{ marginBottom: 16, overflow: 'hidden', padding: 0 }}>
 
+      {/* Images — rendered above everything else, flush to card edges */}
+      {images.length > 0 && <PollImages images={images} />}
+
       {/* Card top strip */}
       <div style={{
         padding: '10px 18px',
         background: 'rgba(196,154,74,0.06)',
         borderBottom: '1px solid rgba(196,154,74,0.12)',
+        borderTop: images.length > 0 ? '1px solid rgba(196,154,74,0.12)' : 'none',
         display: 'flex', alignItems: 'center', gap: 10,
       }}>
         <span style={{ fontSize: 16 }}>📊</span>
@@ -227,12 +283,133 @@ function PollCard({ post, onVoted, onDeleted }) {
   );
 }
 
+/* ─── Image upload area for create form ─── */
+function ImageUploadArea({ images, onImagesChange }) {
+  const fileInputRef = useRef(null);
+  const MAX_IMAGES = 3;
+
+  const handleFiles = (files) => {
+    const valid = Array.from(files).filter(f => f.type.startsWith('image/'));
+    const remaining = MAX_IMAGES - images.length;
+    const toAdd = valid.slice(0, remaining).map(file => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }));
+    if (toAdd.length > 0) onImagesChange([...images, ...toAdd]);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.currentTarget.style.borderColor = 'var(--border)';
+    handleFiles(e.dataTransfer.files);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.currentTarget.style.borderColor = 'var(--accent)';
+  };
+
+  const handleDragLeave = (e) => {
+    e.currentTarget.style.borderColor = 'var(--border)';
+  };
+
+  const removeImage = (idx) => {
+    URL.revokeObjectURL(images[idx].preview);
+    onImagesChange(images.filter((_, i) => i !== idx));
+  };
+
+  return (
+    <div className="form-group">
+      <label className="form-label">
+        Images (optional · max {MAX_IMAGES})
+        <span style={{ fontWeight: 400, color: 'var(--text-muted)', marginLeft: 6 }}>
+          Displayed above the poll question
+        </span>
+      </label>
+
+      {/* Previews */}
+      {images.length > 0 && (
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: `repeat(${images.length}, 1fr)`,
+          gap: 8,
+          marginBottom: 10,
+          borderRadius: 'var(--radius)',
+          overflow: 'hidden',
+        }}>
+          {images.map((img, i) => (
+            <div key={i} style={{ position: 'relative', borderRadius: 'var(--radius)', overflow: 'hidden' }}>
+              <img
+                src={img.preview}
+                alt={`Preview ${i + 1}`}
+                style={{ width: '100%', height: 120, objectFit: 'cover', display: 'block' }}
+              />
+              <button
+                onClick={() => removeImage(i)}
+                style={{
+                  position: 'absolute', top: 6, right: 6,
+                  width: 24, height: 24, borderRadius: 99,
+                  background: 'rgba(0,0,0,0.65)', border: 'none',
+                  color: '#fff', fontSize: 13, cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  lineHeight: 1,
+                }}
+              >✕</button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Drop zone — only shown if under the limit */}
+      {images.length < MAX_IMAGES && (
+        <div
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onClick={() => fileInputRef.current?.click()}
+          style={{
+            border: '1.5px dashed var(--border)',
+            borderRadius: 'var(--radius)',
+            padding: '18px 12px',
+            textAlign: 'center',
+            cursor: 'pointer',
+            transition: 'border-color var(--transition-base), background var(--transition-base)',
+            background: 'rgba(255,255,255,0.02)',
+          }}
+          onMouseEnter={e => e.currentTarget.style.background = 'rgba(157,217,253,0.04)'}
+          onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
+        >
+          <div style={{ fontSize: 22, marginBottom: 6 }}>🖼</div>
+          <div style={{ fontSize: 12.5, color: 'var(--text-muted)' }}>
+            {images.length === 0
+              ? 'Drag & drop or click to add images'
+              : `Add ${MAX_IMAGES - images.length} more image${MAX_IMAGES - images.length > 1 ? 's' : ''}`}
+          </div>
+          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 3, opacity: 0.7 }}>
+            PNG, JPG, GIF, WebP
+          </div>
+        </div>
+      )}
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        multiple
+        style={{ display: 'none' }}
+        onChange={e => { handleFiles(e.target.files); e.target.value = ''; }}
+      />
+    </div>
+  );
+}
+
 /* ─── Create form ─── */
 function CreatePollForm({ onCreated, onCancel }) {
   const [question, setQuestion] = useState('');
   const [description, setDescription] = useState('');
   const [options, setOptions] = useState(['', '']);
   const [isMulti, setIsMulti] = useState(false);
+  const [images, setImages] = useState([]); // [{ file, preview }]
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
@@ -245,14 +422,32 @@ function CreatePollForm({ onCreated, onCancel }) {
     if (!question.trim()) { setError('Question is required.'); return; }
     if (cleanOptions.length < 2) { setError('At least 2 options are required.'); return; }
     setSubmitting(true); setError('');
+
     try {
-      const res = await socialAPI.createPost({
-        type: 'poll',
-        title: question,
-        description: description || null,
-        poll_options: cleanOptions,
-        poll_multi: isMulti,
-      });
+      let res;
+
+      if (images.length > 0) {
+        // Use FormData for multipart upload
+        const formData = new FormData();
+        formData.append('type', 'poll');
+        formData.append('title', question.trim());
+        if (description.trim()) formData.append('description', description.trim());
+        formData.append('poll_options', JSON.stringify(cleanOptions));
+        formData.append('poll_multi', String(isMulti));
+        images.forEach(img => formData.append('images', img.file));
+        res = await socialAPI.createPost(formData);
+      } else {
+        res = await socialAPI.createPost({
+          type: 'poll',
+          title: question.trim(),
+          description: description.trim() || null,
+          poll_options: cleanOptions,
+          poll_multi: isMulti,
+        });
+      }
+
+      // Revoke preview URLs
+      images.forEach(img => URL.revokeObjectURL(img.preview));
       onCreated(res.data.post);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to create poll.');
@@ -261,6 +456,10 @@ function CreatePollForm({ onCreated, onCancel }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+
+      {/* Image upload — first so users can see the layout will be */}
+      <ImageUploadArea images={images} onImagesChange={setImages} />
+
       <div className="form-group">
         <label className="form-label">Poll question *</label>
         <input className="form-input" placeholder="React or Vue for your next project?"
