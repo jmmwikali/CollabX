@@ -89,7 +89,7 @@ export default function TeamsPage() {
               <button className="btn btn-primary" onClick={() => setShowCreate(true)}>Create Your First Team</button>
             </div>
           ) : (
-            <div className="grid-3">
+            <div className="grid-2">
               {myTeams.map((team, i) => (
                 <Link key={team.id} to={`/teams/${team.id}`} style={{ textDecoration: 'none' }}>
                   <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 14, height: '100%', cursor: 'pointer' }}>
