@@ -94,4 +94,9 @@ export const dashboardAPI = {
   }),
 };
 
+// Chatbot
+export const chatAPI = {
+  sendMessage: (message) => api.post('/chat/', { message }),
+};
+
 export default api;

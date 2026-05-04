@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../css/LandingPage.css';
+import { chatAPI } from '../services/api';
 
 const TALENTS = [
   { key: 'frontend',        icon: '⚡', label: 'Frontend Dev',     color: '#60a5fa' },
@@ -24,6 +25,51 @@ const FEATURES = [
 ];
 
 export default function LandingPage() {
+  // ── Chatbot state ──────────────────────────────────────────────
+  const [chatOpen, setChatOpen]       = useState(false);
+  const [chatClosing, setChatClosing] = useState(false);
+  const [messages, setMessages]       = useState([
+    { role: 'bot', text: 'Hi there 👋 I\'m the CollabX assistant. Ask me anything about the platform!' },
+  ]);
+  const [inputVal, setInputVal]       = useState('');
+  const [isTyping, setIsTyping]       = useState(false);
+  const messagesEndRef                = useRef(null);
+
+  const scrollToBottom = () =>
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+
+  useEffect(() => { if (chatOpen) scrollToBottom(); }, [messages, isTyping, chatOpen]);
+
+  const handleChatToggle = () => {
+    if (chatOpen) {
+      setChatClosing(true);
+      setTimeout(() => { setChatOpen(false); setChatClosing(false); }, 280);
+    } else {
+      setChatOpen(true);
+    }
+  };
+
+  const sendMessage = async () => {
+    const text = inputVal.trim();
+    if (!text || isTyping) return;
+    setInputVal('');
+    setMessages(prev => [...prev, { role: 'user', text }]);
+    setIsTyping(true);
+    try {
+      const res  = await chatAPI.sendMessage(text);
+      const data = res.data;
+      setMessages(prev => [...prev, { role: 'bot', text: data.reply || 'Sorry, I couldn\'t get a response.' }]);
+    } catch {
+      setMessages(prev => [...prev, { role: 'bot', text: 'Oops, something went wrong. Please try again.' }]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  const handleKey = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  };
+  // ── End chatbot state ──────────────────────────────────────────
 
   useEffect(() => {
     (function () {
@@ -433,6 +479,82 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* CHATBOT WIDGET */}
+      {(chatOpen || chatClosing) && (
+        <div className={`chatbot-window${chatClosing ? ' is-closing' : ''}`}>
+          <div className="chatbot-header">
+            <div className="chatbot-avatar"><img src="/images/CollabX(white).png" alt="logo" width="24px" height="24px" /></div>
+            <div className="chatbot-header-info">
+              <div className="chatbot-header-name">CollabX Assistant</div>
+              <div className="chatbot-header-status">
+                <span className="chatbot-status-dot" />
+                Online · Always here to help
+              </div>
+            </div>
+          </div>
+
+          <div className="chatbot-messages">
+            {messages.map((msg, i) => (
+              <div key={i} className={`chatbot-msg ${msg.role}`}>
+                {msg.role === 'bot' && (
+                  <div className="chatbot-msg-icon">✦</div>
+                )}
+                <div className="chatbot-msg-bubble">{msg.text}</div>
+              </div>
+            ))}
+            {isTyping && (
+              <div className="chatbot-typing">
+                <div className="chatbot-msg-icon">✦</div>
+                <div className="chatbot-typing-dots">
+                  <span /><span /><span />
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          <div className="chatbot-input-area">
+            <input
+              className="chatbot-input"
+              type="text"
+              placeholder="Ask me anything…"
+              value={inputVal}
+              onChange={e => setInputVal(e.target.value)}
+              onKeyDown={handleKey}
+              disabled={isTyping}
+            />
+            <button
+              className="chatbot-send"
+              onClick={sendMessage}
+              disabled={!inputVal.trim() || isTyping}
+              aria-label="Send message"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13" />
+                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
+      <button
+        className={`chatbot-trigger${chatOpen ? ' is-open' : ''}`}
+        onClick={handleChatToggle}
+        aria-label="Toggle chat assistant"
+      >
+        <span className="icon-chat">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
+        </span>
+        <span className="icon-close">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round">
+            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </span>
+      </button>
 
     </div>
   );

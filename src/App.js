@@ -13,12 +13,18 @@ import './App.css';
 import AuthLayout from './pages/AuthLayout';
 import OnboardingPage from './pages/OnboardingPage';
 import UserProfile from './pages/UserProfile';
+import ChatbotWidget from './components/ChatbotWidget';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return <div className="app-loading"><div className="loader-ring"/></div>;
   if (!user) return <Navigate to="/login" replace />;
-  return children;
+  return (
+    <>
+      {children}
+      <ChatbotWidget />
+    </>
+  );
 };
 
 function AppRoutes() {
