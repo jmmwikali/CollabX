@@ -100,7 +100,6 @@ export default function DashboardPage() {
         <div className="dashboard-stats" style={{ display: 'flex', gap: 24, textAlign: 'center', }}>
           {[
             { label: 'Teams', value: stats.team_count || 0 },
-            { label: 'Messages', value: stats.messages_sent || 0 },
             { label: 'Rep Points', value: (user?.reputation_points || 0).toLocaleString() },
           ].map(s => (
             <div key={s.label} style={{borderLeft: "1.5px solid var(--accent-glow)", paddingLeft: 25}}>
