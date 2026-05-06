@@ -55,7 +55,7 @@ export default function DashboardPage() {
   const unreadDms = data?.unread_dms || 0;
 
   if (loading) return (
-    <AppShell title="Dashboard">
+    <AppShell title="Collab Space">
       <LoadingSpinner size={36} />
     </AppShell>
   );
@@ -64,7 +64,7 @@ export default function DashboardPage() {
 
   return (
     <AppShell
-      title="Dashboard"
+      title="Collab Space"
       pendingInvites={pendingInvites}
       unreadDms={unreadDms}
       actions={

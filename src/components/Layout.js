@@ -144,7 +144,7 @@ export function Sidebar({ pendingInvites = 0, unreadDms = 0, collapsed = false, 
 
       <nav className="sidebar-nav">
         {!collapsed && <span className="nav-section-label">Main</span>}
-        <NavItem to="/dashboard" iconSrc="/images/home.png"    iconAlt="home"   label="Dashboard"     />
+        <NavItem to="/dashboard" iconSrc="/images/home.png"    iconAlt="home"   label="Collab Space"     />
         <NavItem to="/explore"   iconSrc="/images/people.png"  iconAlt="people" label="Explore Talent" />
 
         {!collapsed && <span className="nav-section-label">Workspace</span>}
