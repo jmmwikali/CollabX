@@ -1372,6 +1372,12 @@ body {
   border-top: 1px solid var(--border);
 }
 
+.layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 24px;
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    RESPONSIVE
    ═══════════════════════════════════════════════════════════════════ */
@@ -1941,7 +1947,13 @@ body {
   .unified-feed-section {
     margin-bottom: 20px !important;
   }
+  .layout-grid {
+    grid-template-columns: 1fr;
+  }
 
+  .instant-feed {
+    display: none;
+  }
   /* Empty state: tighten padding */
   .empty-state {
     padding: 32px 16px !important;

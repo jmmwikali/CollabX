@@ -419,11 +419,8 @@ export default function SocialHubPage() {
 
       {/* ── Two-column independently scrolling layout (All tab) ── */}
       {activeTab === 'all' && !loading && !error ? (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 300px',
-          gap: 24,
-          /* Fill from here down to bottom of viewport */
+        <div className="layout-grid" style={{
+        /* Fill from here down to bottom of viewport */
           height: `calc(100vh - ${TOPBAR_H} - 36px - 36px - 52px)`,
           /* 36px top padding + 36px bottom padding from .page-body + ~52px tabs */
           minHeight: 400,
@@ -462,7 +459,7 @@ export default function SocialHubPage() {
           </div>
 
           {/* RIGHT — Panels column, independent scroll */}
-          <div style={{
+          <div className='instant-feed' style={{
             overflowY: 'auto',
             overflowX: 'hidden',
             height: '100%',
