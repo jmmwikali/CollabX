@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
     authAPI.getMe().catch(() => {});
   }, 2 * 60 * 1000); // every 2 min
   return () => clearInterval(interval);
-}, [user]);
+}, [user?.id]);
 
   const login = useCallback(async (email, password) => {
     const res = await authAPI.login({ email, password });

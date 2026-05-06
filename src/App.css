@@ -1377,6 +1377,12 @@ body {
   grid-template-columns: 1fr 300px;
   gap: 24px;
 }
+/* ── User Profile ── */
+.profile-top-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
 
 /* ═══════════════════════════════════════════════════════════════════
    RESPONSIVE
@@ -1550,6 +1556,16 @@ body {
     grid-template-columns: 1fr !important;
   }
 
+  .profile-top-cols {
+    grid-template-columns: 1fr !important;
+  }
+  .profile-card-col,
+  .profile-teams-col {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
   /* ════════════════════════════════════════════════════════════════
      MESSAGES PAGE — one panel at a time
   ════════════════════════════════════════════════════════════════ */
@@ -1573,6 +1589,7 @@ body {
   .messages-chat-panel.hidden-mobile { display: none !important; }
 
   .messages-back-btn { display: flex !important; }
+  .back-btn { display: none; }
 
   /* ════════════════════════════════════════════════════════════════
      TEAM DETAIL PAGE — one panel at a time

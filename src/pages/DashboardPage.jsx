@@ -1,25 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { dashboardAPI, teamsAPI } from '../services/api';
+import { Link, useNavigate } from 'react-router-dom';
+import { dashboardAPI, teamsAPI, usersAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { AppShell, Avatar, TalentBadge, RepBadge, formatTime, LoadingSpinner } from '../components/Layout';
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [invitations, setInvitations] = useState([]);
   const [notifications, setNotifications] = useState([]);
+  // Smart suggestions from /users/suggestions (talent-matched) instead of
+  // the generic rep-sorted list from /dashboard/
+  const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
     Promise.all([
       dashboardAPI.getDashboard(),
       teamsAPI.getMyInvitations(),
       dashboardAPI.getNotifications(),
-    ]).then(([dashRes, invRes, notifRes]) => {
+      usersAPI.getSuggestions(),
+    ]).then(([dashRes, invRes, notifRes, suggestRes]) => {
       setData(dashRes.data.dashboard);
       setInvitations(invRes.data.invitations || []);
       setNotifications(notifRes.data.notifications || []);
+      setSuggestions(suggestRes.data.suggestions || []);
       // Mark all as read now that they're visible
       dashboardAPI.markNotificationsRead().catch(() => {});
     }).catch(console.error)
@@ -34,8 +40,6 @@ export default function DashboardPage() {
   };
 
   const stats = data?.stats || {};
-
-  // Add these two handlers inside the component, after handleInviteResponse:
 
   const handleClearNotification = async (id) => {
     try {
@@ -59,8 +63,6 @@ export default function DashboardPage() {
       <LoadingSpinner size={36} />
     </AppShell>
   );
-
-  
 
   return (
     <AppShell
@@ -110,13 +112,8 @@ export default function DashboardPage() {
         </div>
       </div>
 
-        
-
-      
-
       <div className="dashboard-cols" style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 24, alignItems: 'start' }}>
 
-        
         {/* Left column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
 
@@ -181,8 +178,6 @@ export default function DashboardPage() {
                           <button className="btn btn-sm btn-success" onClick={() => handleClearNotification(n.id)}>Clear</button>
                         </div>
                     </div>
-                  
-                  
                 </div>
               ))}
               {notifications.length === 0 && (
@@ -218,7 +213,6 @@ export default function DashboardPage() {
                       }}><img src="/images/team.png" alt="teams" width={"30px"} height={"30px"} style={{verticalAlign: 'middle', marginRight: '6px'}} /></div>
                       <div style={{ flex: 1, overflow: 'hidden' }}>
                         <div style={{ fontWeight: 600, fontSize: 15 }}>{team.name}</div>
-                        {/* FIX: Only append "..." if the message is actually truncated */}
                         <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
                           {team.member_count} members ·{' '}
                           {team.last_message
@@ -245,7 +239,7 @@ export default function DashboardPage() {
 
         {/* Right column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-          {/* Suggested Talent */}
+          {/* Suggested Talent — now from /users/suggestions (talent-matched) */}
           <div style={{ 
             background: 'linear-gradient(145deg,rgba(15, 22, 41, 0.85) 0%,rgba(4, 14, 35, 0.75) 100%)',
             padding: 14,
@@ -256,9 +250,13 @@ export default function DashboardPage() {
               <h3 className="section-title"><img src="/images/stars.png" alt="stars" width={"20px"} height={"20px"} style={{verticalAlign: 'middle', marginRight: '6px'}} /> Suggested Talent</h3>
               <Link to="/explore" style={{ fontSize: 13, color: 'var(--accent-bright)', textDecoration: 'none' }}>Explore →</Link>
             </div>
+            {/* Subtle label showing these are personalized matches */}
+            <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 10 }}>
+              Matched to your <span style={{ color: 'var(--accent-bright)', textTransform: 'capitalize' }}>{user?.primary_talent?.replace('_', ' ')}</span> profile
+            </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {(data?.suggestions || []).slice(0, 5).map(person => (
-                <div key={person.id} className="card card-sm" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              {suggestions.slice(0, 5).map(person => (
+                <div key={person.id} className="card card-sm" style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }} onClick={() => navigate('/userprofile', { state: { u: person } })}>
                   <Avatar user={person} size={36} />
                   <div style={{ flex: 1, overflow: 'hidden' }}>
                     <div style={{ fontWeight: 600, fontSize: 13, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--text-mid)' }}>{person.name}</div>
@@ -267,10 +265,13 @@ export default function DashboardPage() {
                   <RepBadge points={person.reputation_points} />
                 </div>
               ))}
+              {suggestions.length === 0 && (
+                <div style={{ color: 'var(--text-muted)', fontSize: 13, textAlign: 'center', padding: '16px 0' }}>
+                  No suggestions yet.
+                </div>
+              )}
             </div>
           </div>
-
-          
         </div>
       </div>
     </AppShell>

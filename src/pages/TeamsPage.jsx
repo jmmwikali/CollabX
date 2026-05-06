@@ -14,6 +14,12 @@ export default function TeamsPage() {
   const [createError, setCreateError] = useState('');
   const [tab, setTab] = useState('mine');
 
+  // Discover tab state
+  const [discoverTeams, setDiscoverTeams] = useState([]);
+  const [discoverLoading, setDiscoverLoading] = useState(false);
+  const [discoverSearch, setDiscoverSearch] = useState('');
+  const [discoverFetched, setDiscoverFetched] = useState(false);
+
   const load = () => {
     setLoading(true);
     Promise.all([
@@ -27,6 +33,34 @@ export default function TeamsPage() {
   };
 
   useEffect(() => { load(); }, []);
+
+  // Fetch all public teams when the Discover tab is first opened
+  useEffect(() => {
+    if (tab === 'discover' && !discoverFetched) {
+      setDiscoverLoading(true);
+      teamsAPI.getTeams({ limit: 20 })
+        .then(res => {
+          setDiscoverTeams(res.data.teams || []);
+          setDiscoverFetched(true);
+        })
+        .catch(console.error)
+        .finally(() => setDiscoverLoading(false));
+    }
+  }, [tab, discoverFetched]);
+
+  // Debounced search within the Discover tab
+  useEffect(() => {
+    if (tab !== 'discover') return;
+    const timer = setTimeout(() => {
+      setDiscoverLoading(true);
+      teamsAPI.getTeams({ search: discoverSearch || undefined, limit: 20 })
+        .then(res => setDiscoverTeams(res.data.teams || []))
+        .catch(console.error)
+        .finally(() => setDiscoverLoading(false));
+    }, 400);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [discoverSearch]);
 
   const handleCreate = async e => {
     e.preventDefault();
@@ -54,6 +88,9 @@ export default function TeamsPage() {
 
   const TEAM_COLORS = ['#3b82f6','#06b6d4','#8b5cf6','#f472b6','#10b981','#f59e0b','#ef4444'];
 
+  // IDs the user is already part of — used to label cards in Discover
+  const myTeamIds = new Set(myTeams.map(t => t.id));
+
   return (
     <AppShell
       title="Teams"
@@ -66,7 +103,11 @@ export default function TeamsPage() {
     >
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 4, marginBottom: 24, borderBottom: '1px solid var(--border)', paddingBottom: 0 }}>
-        {[['mine', `My Teams (${myTeams.length})`], ['invites', `Invitations (${invitations.length})`]].map(([key, label]) => (
+        {[
+          ['mine',     `My Teams (${myTeams.length})`],
+          ['discover', 'Discover'],
+          ['invites',  `Invitations (${invitations.length})`],
+        ].map(([key, label]) => (
           <button key={key} onClick={() => setTab(key)} style={{
             padding: '10px 18px',
             background: 'none', border: 'none', cursor: 'pointer',
@@ -134,8 +175,68 @@ export default function TeamsPage() {
             </div>
           )}
         </>
+
+      ) : tab === 'discover' ? (
+        /* ── Discover tab ── */
+        <>
+          <div className="card card-sm" style={{ marginBottom: 20 }}>
+            <input
+              className="form-input"
+              placeholder="Search teams by name or description..."
+              value={discoverSearch}
+              onChange={e => setDiscoverSearch(e.target.value)}
+            />
+          </div>
+
+          {discoverLoading ? <LoadingSpinner /> : discoverTeams.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-state-icon"><img src="/images/team.png" alt="teams" width={'30px'} height={'30px'}/></div>
+              <div className="empty-state-text">No teams found.</div>
+            </div>
+          ) : (
+            <div className="grid-2">
+              {discoverTeams.map((team, i) => (
+                <Link key={team.id} to={`/teams/${team.id}`} style={{ textDecoration: 'none' }}>
+                  <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 14, height: '100%', cursor: 'pointer' }}>
+                    <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                      <div style={{
+                        width: 44, height: 44, borderRadius: 'var(--radius)',
+                        background: TEAM_COLORS[i % TEAM_COLORS.length],
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        flexShrink: 0,
+                      }}><img src="/images/team.png" alt="teams" width={'24px'} height={'24px'}/></div>
+                      <div style={{ flex: 1, overflow: 'hidden' }}>
+                        <div style={{ fontWeight: 700, fontSize: 16 }}>{team.name}</div>
+                        <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                          {team.member_count} members · by {team.creator_name}
+                        </div>
+                      </div>
+                      {/* Badge if user is already a member */}
+                      {myTeamIds.has(team.id) && (
+                        <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: 'rgba(59,130,246,0.15)', color: 'var(--accent-bright)', flexShrink: 0 }}>
+                          Joined
+                        </span>
+                      )}
+                    </div>
+                    {team.description && (
+                      <p style={{
+                        fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5,
+                        overflow: 'hidden', display: '-webkit-box',
+                        WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
+                      }}>{team.description}</p>
+                    )}
+                    <div style={{ marginTop: 'auto', fontSize: 11, color: 'var(--text-muted)' }}>
+                      {formatTime(team.created_at)}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </>
+
       ) : (
-        /* Invitations tab */
+        /* ── Invitations tab ── */
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 600 }}>
           {invitations.length === 0 ? (
             <div className="empty-state">

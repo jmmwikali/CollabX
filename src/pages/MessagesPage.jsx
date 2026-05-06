@@ -17,6 +17,8 @@ export default function MessagesPage() {
   const messagesEndRef = useRef(null);
   const pollRef = useRef(null);
   const isMountedRef = useRef(true);
+  const chatScrollRef = useRef(null); // scrollable message container
+  const userSentRef = useRef(false);  // true when the local user just sent a message
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -75,7 +77,14 @@ export default function MessagesPage() {
   }, [activeConv, loadMessages]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const el = chatScrollRef.current;
+    if (!el) return;
+    // Auto-scroll only if user just sent a message OR is already near the bottom (within 120px)
+    const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 120;
+    if (userSentRef.current || isNearBottom) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+    userSentRef.current = false;
   }, [messages]);
 
   const selectConv = (conv) => {
@@ -87,6 +96,7 @@ export default function MessagesPage() {
     e.preventDefault();
     if (!input.trim() || !activeConv || sending) return;
     setSending(true);
+    userSentRef.current = true; // flag so scroll snaps to bottom on send
     const content = input.trim();
     try {
       const res = await messagesAPI.sendDirectMessage(activeConv.other_user_id, { content });
@@ -206,7 +216,7 @@ export default function MessagesPage() {
                 </div>
               </div>
 
-              <div style={{ flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div ref={chatScrollRef} style={{ flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {messages.length === 0 ? (
                   <div className="empty-state"><div>No messages yet. Say hello! 👋</div></div>
                 ) : messages.map(msg => {

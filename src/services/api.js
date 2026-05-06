@@ -68,6 +68,7 @@ export const teamsAPI = {
   inviteUser: (teamId, data) => api.post(`/teams/${teamId}/invite`, data),
   respondToInvitation: (inviteId, status) => api.put(`/teams/invitations/${inviteId}/respond`, { status }),
   getMyInvitations: () => api.get('/teams/invitations'),
+  leaveTeam: (teamId) => api.delete(`/teams/${teamId}/leave`),
 };
 
 // Messages
