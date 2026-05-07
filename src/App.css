@@ -507,6 +507,115 @@ body {
 .topbar-actions { display: flex; align-items: center; gap: 10px; }
 
 /* ═══════════════════════════════════════════════════════════════════
+   REPUTATION POINTS — animated count-up display (Social Hub topbar)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Wrapper that holds the pill + floating toasts */
+.rep-points-display {
+  position: relative;
+  display: inline-flex;
+}
+
+/* The pill itself */
+.rep-points-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(157,217,253,0.10), rgba(0,184,204,0.08));
+  border: 1px solid rgba(157,217,253,0.20);
+  box-shadow: 0 0 16px rgba(157,217,253,0.06);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Glowing state — activated while toasts are visible */
+.rep-points-pill--glow {
+  border-color: rgba(74,222,128,0.50) !important;
+  box-shadow: 0 0 20px rgba(74,222,128,0.25), 0 0 8px rgba(74,222,128,0.10) !important;
+}
+
+/* ⭐ icon */
+.rep-points-star {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.rep-points-star--pulse {
+  animation: repStarPulse 0.4s ease-in-out;
+}
+
+/* Number + label stack */
+.rep-points-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1;
+}
+
+.rep-points-value {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--accent);
+  letter-spacing: -0.5px;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.3s ease;
+}
+
+.rep-points-value--glow {
+  color: #4ade80 !important;
+}
+
+.rep-points-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+
+/* Floating +XP toast */
+.rep-toast {
+  position: absolute;
+  top: -8px;
+  right: -4px;
+  font-size: 11px;
+  font-weight: 800;
+  pointer-events: none;
+  animation: repToastFly 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  z-index: 9999;
+}
+
+.rep-toast--positive {
+  color: #4ade80;
+  text-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+}
+
+.rep-toast--negative {
+  color: #f87171;
+  text-shadow: 0 0 8px rgba(248, 113, 113, 0.6);
+}
+
+/* ── Keyframes ── */
+@keyframes repToastFly {
+  0%   { opacity: 0; transform: translateY(0px)   scale(0.8); }
+  15%  { opacity: 1; transform: translateY(-6px)  scale(1.1); }
+  70%  { opacity: 1; transform: translateY(-22px) scale(1);   }
+  100% { opacity: 0; transform: translateY(-36px) scale(0.9); }
+}
+
+@keyframes repStarPulse {
+  0%   { transform: scale(1)   rotate(0deg);   }
+  40%  { transform: scale(1.5) rotate(-10deg); }
+  70%  { transform: scale(0.9) rotate(5deg);   }
+  100% { transform: scale(1)   rotate(0deg);   }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    CARDS 
    ═══════════════════════════════════════════════════════════════════ */
 .card {

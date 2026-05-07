@@ -64,22 +64,7 @@ function RepToast({ delta, id }) {
   return (
     <div
       key={id}
-      style={{
-        position: 'absolute',
-        top: -8,
-        right: -4,
-        fontSize: 11,
-        fontWeight: 800,
-        color: isPositive ? '#4ade80' : '#f87171',
-        pointerEvents: 'none',
-        animation: 'repToastFly 1.4s cubic-bezier(0.16,1,0.3,1) forwards',
-        letterSpacing: '0.3px',
-        textShadow: isPositive
-          ? '0 0 8px rgba(74,222,128,0.6)'
-          : '0 0 8px rgba(248,113,113,0.6)',
-        whiteSpace: 'nowrap',
-        zIndex: 9999,
-      }}
+      className={`rep-toast ${isPositive ? 'rep-toast--positive' : 'rep-toast--negative'}`}
     >
       {isPositive ? '+' : ''}{delta} rep
     </div>
@@ -92,69 +77,23 @@ function ReputationDisplay({ points, toasts }) {
   const isGlowing = toasts.length > 0;
 
   return (
-    <div style={{ position: 'relative', display: 'inline-flex' }}>
+    <div className="rep-points-display">
       {/* Floating toasts */}
       {toasts.map(t => (
         <RepToast key={t.id} delta={t.delta} id={t.id} />
       ))}
 
-      <div style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 8,
-        padding: '7px 16px',
-        borderRadius: 'var(--radius-lg)',
-        background: 'linear-gradient(135deg, rgba(157,217,253,0.1), rgba(0,184,204,0.08))',
-        border: `1px solid ${isGlowing ? 'rgba(74,222,128,0.5)' : 'rgba(157,217,253,0.2)'}`,
-        boxShadow: isGlowing
-          ? '0 0 20px rgba(74,222,128,0.25), 0 0 8px rgba(74,222,128,0.1)'
-          : '0 0 16px rgba(157,217,253,0.06)',
-        transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
-      }}>
-        <span style={{
-          fontSize: 16, lineHeight: 1,
-          animation: isGlowing ? 'repStarPulse 0.4s ease-in-out' : 'none',
-        }}>⭐</span>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', lineHeight: 1 }}>
-          <span style={{
-            fontFamily: 'var(--font-display)',
-            fontWeight: 800,
-            fontSize: 18,
-            color: isGlowing ? '#4ade80' : 'var(--accent)',
-            letterSpacing: '-0.5px',
-            fontVariantNumeric: 'tabular-nums',
-            transition: 'color 0.3s ease',
-          }}>
+      <div className={`rep-points-pill${isGlowing ? ' rep-points-pill--glow' : ''}`}>
+        <span className={`rep-points-star${isGlowing ? ' rep-points-star--pulse' : ''}`}>
+          ⭐
+        </span>
+        <div className="rep-points-info">
+          <span className={`rep-points-value${isGlowing ? ' rep-points-value--glow' : ''}`}>
             {animatedPoints.toLocaleString()}
           </span>
-          <span style={{
-            fontSize: 10,
-            fontWeight: 600,
-            color: 'var(--text-muted)',
-            letterSpacing: '0.7px',
-            textTransform: 'uppercase',
-            marginTop: 1,
-          }}>
-            Rep Points
-          </span>
+          <span className="rep-points-label">Rep Points</span>
         </div>
       </div>
-
-      {/* Inject keyframes once */}
-      <style>{`
-        @keyframes repToastFly {
-          0%   { opacity: 0; transform: translateY(0px) scale(0.8); }
-          15%  { opacity: 1; transform: translateY(-6px) scale(1.1); }
-          70%  { opacity: 1; transform: translateY(-22px) scale(1); }
-          100% { opacity: 0; transform: translateY(-36px) scale(0.9); }
-        }
-        @keyframes repStarPulse {
-          0%   { transform: scale(1); }
-          40%  { transform: scale(1.5) rotate(-10deg); }
-          70%  { transform: scale(0.9) rotate(5deg); }
-          100% { transform: scale(1) rotate(0deg); }
-        }
-      `}</style>
     </div>
   );
 }
@@ -264,10 +203,13 @@ export default function SocialHubPage() {
         ? updaterOrValue(prev)
         : updaterOrValue;
 
-      // Detect a like toggle: find a post whose liked_by_me flipped true
-      for (let i = 0; i < Math.min(prev.length, next.length); i++) {
-        const p = prev[i], n = next[i];
-        if (!p || !n || p.id !== n.id) continue;
+      // Build a lookup of previous posts by id for reliable diffing
+      // (index-based diffing breaks when posts are shuffled in the All tab)
+      const prevById = Object.fromEntries(prev.map(p => [p.id, p]));
+
+      for (const n of next) {
+        const p = prevById[n.id];
+        if (!p) continue; // new post — no diff needed
 
         // Like gained
         if (!p.liked_by_me && n.liked_by_me) {
