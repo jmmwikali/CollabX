@@ -264,8 +264,7 @@ export default function LandingPage() {
                 CollabX connects builders, designers,<br />
                 writers, and marketers.
               </strong>{" "}
-              Discover complementary talent, form teams, and<br />
-              coordinate everything in one place.
+              Discover people just like YOU, people who understand YOU, and who can help YOU make your dreams come true!
             </p>
           </div>
 
